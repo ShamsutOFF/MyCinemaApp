@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mycinemaapp.databinding.ItemNowPlayingBinding
+import com.example.mycinemaapp.databinding.ItemUpcomingBinding
 
-class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
+class UpcomingAdapter : RecyclerView.Adapter<UpcomingAdapter.ViewHolder>() {
 
     private var movieData: List<MovieEntity> = emptyList()
     private val TAG: String = "@@@ NowPlayingAdapter"
@@ -26,7 +26,7 @@ class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
         Log.d(TAG, "onCreateViewHolder() called with: parent = $parent, viewType = $viewType")
         return ViewHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_now_playing, parent, false) as View
+                .inflate(R.layout.item_upcoming, parent, false) as View
         )
     }
 
@@ -41,7 +41,7 @@ class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val binding = ItemNowPlayingBinding.bind(itemView)
+        private val binding = ItemUpcomingBinding.bind(itemView)
 
         fun bind(movie: MovieEntity) {
             Log.d(TAG, "bind() called with: movie = $movie")
@@ -52,7 +52,6 @@ class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
         private fun setText(movie: MovieEntity) {
             Log.d(TAG, "setText() called with: movie = $movie")
             binding.titleTextView.text = movie.title
-            binding.ratingTextView.text = movie.voteAverage.toString()
             binding.yearTextView.text = movie.releaseDate
             itemView.setOnClickListener {
                 Toast.makeText(

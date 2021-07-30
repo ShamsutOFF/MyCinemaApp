@@ -1,7 +1,6 @@
 package com.example.mycinemaapp.ui.home
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ammymovie.ui.main.model.Repository
@@ -15,10 +14,9 @@ class HomeViewModel(
     private val TAG: String = "@@@ HomeViewModel"
 
     // Получаем данные
-    fun getLiveData() {
-        Log.d(TAG, "getLiveData() called")
-        liveDataToObserve
-    }
+    fun getLiveData() = liveDataToObserve
+//        Log.d(TAG, "getLiveData() called")
+
         fun getDataFromLocalSource() {
             Log.d(TAG, "getDataFromLocalSource() called")
             liveDataToObserve.value = AppState.Loading

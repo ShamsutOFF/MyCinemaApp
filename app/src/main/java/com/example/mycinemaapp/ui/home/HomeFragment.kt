@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycinemaapp.AppState
 import com.example.mycinemaapp.NowPlayingAdapter
+import com.example.mycinemaapp.UpcomingAdapter
 import com.example.mycinemaapp.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -16,6 +18,7 @@ class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
     private var _binding: FragmentHomeBinding? = null
     private val adapterPlayNow = NowPlayingAdapter()
+    private val adapterUpcoming = UpcomingAdapter()
     private val binding get() = _binding!!
     private val TAG: String = "@@@ HomeFragment"
 
@@ -51,7 +54,11 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "initRecycler() called")
         // Создаем два списка
         binding.nowPlayingRecyclerView.adapter = adapterPlayNow
-//        binding.upcomingRecyclerView.adapter = adapterUpcoming
+        binding.nowPlayingRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.upcomingRecyclerView.adapter = adapterUpcoming
+        binding.upcomingRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 //        val itemDecoration = dividerItemDecoration()
 //        binding.recyclerPlaying.addItemDecoration(itemDecoration)
 //        binding.recyclerUpcoming.addItemDecoration(itemDecoration)
@@ -61,8 +68,8 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "initViewModel() called")
 
         //TODO Доразобраться с этого момента
-//        homeViewModel.getLiveData().observe(viewLifecycleOwner) { renderData(it) }
-//        homeViewModel.getDataFromLocalSource()
+        homeViewModel.getLiveData().observe(viewLifecycleOwner) { renderData(it) }
+        homeViewModel.getDataFromLocalSource()
     }
 
     private fun renderData(appState: AppState) {
@@ -73,10 +80,11 @@ class HomeFragment : Fragment() {
         when (appState) {
             is AppState.Success -> {
                 val movieDataPlay = appState.movieDataPlay
-//                val movieDataCome = appState.movieDataCome
+                val movieDataCome = appState.movieDataCome
 //                loadingLayout.visibility = View.GONE
                 adapterPlayNow.setData(movieDataPlay)
-//                adapterUpcoming.setData(movieDataCome)
+                adapterPlayNow.notifyDataSetChanged()
+                adapterUpcoming.setData(movieDataCome)
             }
             is AppState.Loading -> {
 //                loadingLayout.visibility = View.VISIBLE
