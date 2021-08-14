@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.ItemUpcomingBinding
@@ -12,7 +11,10 @@ import com.example.mycinemaapp.model.MovieEntity
 
 private const val TAG: String = "@@@ NowPlayingAdapter"
 
-class UpcomingAdapter : RecyclerView.Adapter<UpcomingAdapter.ViewHolder>() {
+class UpcomingAdapter(
+    private var onItemViewClickListener:
+    HomeFragment.OnItemViewClickListener?
+) : RecyclerView.Adapter<UpcomingAdapter.ViewHolder>() {
 
     private var movieData: List<MovieEntity> = emptyList()
 
@@ -50,19 +52,13 @@ class UpcomingAdapter : RecyclerView.Adapter<UpcomingAdapter.ViewHolder>() {
             Log.d(TAG, "bind() called with: movie = $movie")
             setText(movie)
             setPoster(movie.posterPath)
+            setClickListener(movie)
         }
 
         private fun setText(movie: MovieEntity) {
             Log.d(TAG, "setText() called with: movie = $movie")
             binding.titleTextView.text = movie.title
             binding.yearTextView.text = movie.releaseDate
-            itemView.setOnClickListener {
-                Toast.makeText(
-                    itemView.context,
-                    movie.title,
-                    Toast.LENGTH_LONG
-                ).show()
-            }
         }
 
         private fun setPoster(path: String?) {
@@ -73,5 +69,16 @@ class UpcomingAdapter : RecyclerView.Adapter<UpcomingAdapter.ViewHolder>() {
                 //todo set image via glide
             }
         }
+
+        private fun setClickListener(movie: MovieEntity) {
+            Log.d(TAG, "setClickListener() called with: movie = $movie")
+            itemView.setOnClickListener {
+                onItemViewClickListener?.onItemViewClick(movie)
+            }
+        }
+    }
+
+    fun removeListener() {
+        onItemViewClickListener = null
     }
 }

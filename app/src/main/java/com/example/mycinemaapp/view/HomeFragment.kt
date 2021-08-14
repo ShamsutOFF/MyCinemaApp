@@ -32,7 +32,19 @@ class HomeFragment : Fragment() {
             }
         }
     })
-    private val adapterUpcoming = UpcomingAdapter()
+    private val adapterUpcoming = UpcomingAdapter(object : OnItemViewClickListener {
+        override fun onItemViewClick(movie: MovieEntity) {
+            val manager = activity?.supportFragmentManager
+            if (manager != null) {
+                val bundle = Bundle()
+                bundle.putParcelable(MovieFragment.BUNDLE_EXTRA, movie)
+                manager.beginTransaction()
+                    .add(R.id.container, MovieFragment.newInstance(bundle))
+                    .addToBackStack("")
+                    .commitAllowingStateLoss()
+            }
+        }
+    })
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -105,6 +117,7 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "onDestroyView() called")
         super.onDestroyView()
         adapterPlayNow.removeListener()
+        adapterUpcoming.removeListener()
         _binding = null
     }
 }

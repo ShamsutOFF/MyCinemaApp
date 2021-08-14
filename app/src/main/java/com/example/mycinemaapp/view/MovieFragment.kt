@@ -11,7 +11,6 @@ import com.example.mycinemaapp.model.MovieEntity
 private const val TAG: String = "@@@ MovieFragment"
 
 class MovieFragment : Fragment() {
-    //    private lateinit var movieViewModel: MovieViewModel
     private var _binding: FragmentMovieBinding? = null
     private val binding get() = _binding!!
 
