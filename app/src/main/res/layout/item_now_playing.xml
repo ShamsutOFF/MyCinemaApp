@@ -39,7 +39,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_text_view"
-            tools:text="2020" />
+            tools:text="02.02.2020" />
 
         <ImageView
             android:id="@+id/star_image_view"
@@ -47,9 +47,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/short_margin"
             android:src="@drawable/ic_baseline_star_rate_24"
-            app:layout_constraintBottom_toBottomOf="@id/year_text_view"
-            app:layout_constraintEnd_toStartOf="@id/rating_text_view"
-            app:layout_constraintTop_toTopOf="@id/year_text_view" />
+            app:layout_constraintBottom_toBottomOf="@id/rating_text_view"
+            app:layout_constraintStart_toStartOf="@id/rating_text_view"
+            app:layout_constraintTop_toTopOf="@id/rating_text_view"
+            app:layout_constraintEnd_toEndOf="@+id/rating_text_view"/>
 
         <TextView
             android:id="@+id/rating_text_view"
@@ -58,6 +59,7 @@
             android:layout_margin="@dimen/short_margin"
             app:layout_constraintBottom_toBottomOf="@id/year_text_view"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/year_text_view"
             app:layout_constraintTop_toTopOf="@id/year_text_view"
             tools:text="5.7" />
 

@@ -1,5 +1,9 @@
-package com.example.mycinemaapp
+package com.example.mycinemaapp.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class MovieEntity(
     val id: Int,
     val title: String,
@@ -7,4 +11,4 @@ data class MovieEntity(
     val releaseDate: String,
     val voteAverage: Float,
     val isUpcoming: Boolean
-)
+): Parcelable

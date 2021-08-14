@@ -1,4 +1,4 @@
-package com.example.mycinemaapp.ui.home
+package com.example.mycinemaapp.view
 
 import android.os.Bundle
 import android.util.Log
@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.mycinemaapp.AppState
-import com.example.mycinemaapp.NowPlayingAdapter
-import com.example.mycinemaapp.UpcomingAdapter
 import com.example.mycinemaapp.databinding.FragmentHomeBinding
+import com.example.mycinemaapp.viewmodel.AppState
+import com.example.mycinemaapp.viewmodel.HomeViewModel
 
+private const val TAG: String = "@@@ HomeFragment"
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
@@ -20,7 +20,6 @@ class HomeFragment : Fragment() {
     private val adapterPlayNow = NowPlayingAdapter()
     private val adapterUpcoming = UpcomingAdapter()
     private val binding get() = _binding!!
-    private val TAG: String = "@@@ HomeFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,11 +30,10 @@ class HomeFragment : Fragment() {
             TAG,
             "onCreateView() called with: inflater = $inflater, container = $container, savedInstanceState = $savedInstanceState"
         )
+
         homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -44,6 +42,7 @@ class HomeFragment : Fragment() {
             TAG,
             "onViewCreated() called with: view = $view, savedInstanceState = $savedInstanceState"
         )
+
         super.onViewCreated(view, savedInstanceState)
         // Инициализация данных
         initRecycler()
@@ -59,15 +58,10 @@ class HomeFragment : Fragment() {
         binding.upcomingRecyclerView.adapter = adapterUpcoming
         binding.upcomingRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-//        val itemDecoration = dividerItemDecoration()
-//        binding.recyclerPlaying.addItemDecoration(itemDecoration)
-//        binding.recyclerUpcoming.addItemDecoration(itemDecoration)
     }
 
     private fun initViewModel() {
         Log.d(TAG, "initViewModel() called")
-
-        //TODO Доразобраться с этого момента
         homeViewModel.getLiveData().observe(viewLifecycleOwner) { renderData(it) }
         homeViewModel.getDataFromLocalSource()
     }
@@ -75,26 +69,17 @@ class HomeFragment : Fragment() {
     private fun renderData(appState: AppState) {
         Log.d(TAG, "renderData() called with: appState = $appState")
         //Заполняем списки
-//        val loadingLayout = binding.loadingLayout
-//        val mainView = binding.mainView
         when (appState) {
             is AppState.Success -> {
                 val movieDataPlay = appState.movieDataPlay
                 val movieDataCome = appState.movieDataCome
-//                loadingLayout.visibility = View.GONE
                 adapterPlayNow.setData(movieDataPlay)
                 adapterPlayNow.notifyDataSetChanged()
                 adapterUpcoming.setData(movieDataCome)
             }
             is AppState.Loading -> {
-//                loadingLayout.visibility = View.VISIBLE
             }
             is AppState.Error -> {
-//                loadingLayout.visibility = View.GONE
-//                Snackbar
-//                    .make(homeViewModel, "Error", Snackbar.LENGTH_INDEFINITE)
-//                    .setAction("Reload") { homeViewModel.getDataFromLocalSource() }
-//                    .show()
             }
         }
     }

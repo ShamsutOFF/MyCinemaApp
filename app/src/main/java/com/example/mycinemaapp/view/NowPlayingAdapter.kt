@@ -1,4 +1,4 @@
-package com.example.mycinemaapp
+package com.example.mycinemaapp.view
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.ItemNowPlayingBinding
+import com.example.mycinemaapp.model.MovieEntity
+
+private const val TAG: String = "@@@ NowPlayingAdapter"
 
 class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
 
     private var movieData: List<MovieEntity> = emptyList()
-    private val TAG: String = "@@@ NowPlayingAdapter"
 
     fun setData(data: List<MovieEntity>) {
         Log.d(TAG, "setData() called with: data = $data")
@@ -72,5 +75,4 @@ class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
             }
         }
     }
-
 }

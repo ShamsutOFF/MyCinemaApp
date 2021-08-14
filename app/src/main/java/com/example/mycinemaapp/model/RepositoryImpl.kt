@@ -1,10 +1,8 @@
-package com.example.mycinemaapp
+package com.example.mycinemaapp.model
 
 import android.util.Log
-import com.example.ammymovie.ui.main.model.Repository
-
+private const val TAG: String = "@@@ RepositoryImpl"
 class RepositoryImpl : Repository {
-    private val TAG: String = "@@@ RepositoryImpl"
 
     override fun getMoviesFromServer(): MovieEntity {
         Log.d(TAG, "getMoviesFromServer() called")
@@ -42,5 +40,4 @@ class RepositoryImpl : Repository {
             MovieEntity(30, "Тест 30", null, "", 5.5F, true)
         )
     }
-
 }

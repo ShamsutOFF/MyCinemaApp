@@ -1,4 +1,4 @@
-package com.example.mycinemaapp.ui.favorites
+package com.example.mycinemaapp.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

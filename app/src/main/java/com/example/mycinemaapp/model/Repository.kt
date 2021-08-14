@@ -1,6 +1,4 @@
-package com.example.ammymovie.ui.main.model
-
-import com.example.mycinemaapp.MovieEntity
+package com.example.mycinemaapp.model
 
 interface Repository {
     fun getMoviesFromServer(): MovieEntity
