@@ -16,18 +16,17 @@ class MovieFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentMovieBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val movie = arguments?.getParcelable<MovieEntity>(BUNDLE_EXTRA)
-        if (movie != null){
-            binding.movieTitleTextView.text = movie.title
-            binding.movieRatingTextView.text = movie.voteAverage.toString()
-            binding.movieReleaseDateTextView.text = movie.releaseDate
+        arguments?.getParcelable<MovieEntity>(BUNDLE_EXTRA)?.let {
+            binding.movieTitleTextView.text = it.title
+            binding.movieRatingTextView.text = it.voteAverage.toString()
+            binding.movieReleaseDateTextView.text = it.releaseDate
         }
     }
 
