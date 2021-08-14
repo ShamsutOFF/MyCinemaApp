@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.ItemNowPlayingBinding
@@ -12,7 +11,8 @@ import com.example.mycinemaapp.model.MovieEntity
 
 private const val TAG: String = "@@@ NowPlayingAdapter"
 
-class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
+class NowPlayingAdapter(private var onItemViewClickListener:
+                        HomeFragment.OnItemViewClickListener?) : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
 
     private var movieData: List<MovieEntity> = emptyList()
 
@@ -50,6 +50,7 @@ class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
             Log.d(TAG, "bind() called with: movie = $movie")
             setText(movie)
             setPoster(movie.posterPath)
+            setClickListener(movie)
         }
 
         private fun setText(movie: MovieEntity) {
@@ -57,13 +58,7 @@ class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
             binding.titleTextView.text = movie.title
             binding.ratingTextView.text = movie.voteAverage.toString()
             binding.yearTextView.text = movie.releaseDate
-            itemView.setOnClickListener {
-                Toast.makeText(
-                    itemView.context,
-                    movie.title,
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+
         }
 
         private fun setPoster(path: String?) {
@@ -74,5 +69,15 @@ class NowPlayingAdapter : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
                 //todo set image via glide
             }
         }
+
+        private fun setClickListener(movie: MovieEntity) {
+            Log.d(TAG, "setClickListener() called with: movie = $movie")
+            itemView.setOnClickListener {
+                onItemViewClickListener?.onItemViewClick(movie)
+            }
+        }
+    }
+    fun removeListener() {
+        onItemViewClickListener = null
     }
 }

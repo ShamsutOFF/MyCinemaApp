@@ -8,19 +8,32 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.FragmentHomeBinding
+import com.example.mycinemaapp.model.MovieEntity
 import com.example.mycinemaapp.viewmodel.AppState
 import com.example.mycinemaapp.viewmodel.HomeViewModel
 
 private const val TAG: String = "@@@ HomeFragment"
 class HomeFragment : Fragment() {
-
     private lateinit var homeViewModel: HomeViewModel
+
     private var _binding: FragmentHomeBinding? = null
-    private val adapterPlayNow = NowPlayingAdapter()
+    private val adapterPlayNow = NowPlayingAdapter(object : OnItemViewClickListener {
+        override fun onItemViewClick(movie: MovieEntity) {
+            val manager = activity?.supportFragmentManager
+            if (manager != null) {
+                val bundle = Bundle()
+                bundle.putParcelable(MovieFragment.BUNDLE_EXTRA, movie)
+                manager.beginTransaction()
+                    .add(R.id.container, MovieFragment.newInstance(bundle))
+                    .addToBackStack("")
+                    .commitAllowingStateLoss()
+            }
+        }
+    })
     private val adapterUpcoming = UpcomingAdapter()
     private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,9 +97,14 @@ class HomeFragment : Fragment() {
         }
     }
 
+    interface OnItemViewClickListener {
+        fun onItemViewClick(movie: MovieEntity)
+    }
+
     override fun onDestroyView() {
         Log.d(TAG, "onDestroyView() called")
         super.onDestroyView()
+        adapterPlayNow.removeListener()
         _binding = null
     }
 }

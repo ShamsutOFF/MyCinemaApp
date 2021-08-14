@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/title_movie_text_view"
+        android:id="@+id/movie_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -20,7 +20,7 @@
         tools:text="Какое то название фильма" />
 
     <TextView
-        android:id="@+id/title_movie_on_english_text_view"
+        android:id="@+id/movie_title_on_english_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

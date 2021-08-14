@@ -4,38 +4,45 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.mycinemaapp.databinding.FragmentMovieBinding
-import com.example.mycinemaapp.viewmodel.MovieViewModel
+import com.example.mycinemaapp.model.MovieEntity
 
 private const val TAG: String = "@@@ MovieFragment"
 
 class MovieFragment : Fragment() {
-    private lateinit var movieViewModel: MovieViewModel
+    //    private lateinit var movieViewModel: MovieViewModel
     private var _binding: FragmentMovieBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        movieViewModel =
-            ViewModelProvider(this).get(MovieViewModel::class.java)
-
         _binding = FragmentMovieBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
 
-        val textView: TextView = binding.titleMovieTextView
-        movieViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
-        return root
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val movie = arguments?.getParcelable<MovieEntity>(BUNDLE_EXTRA)
+        if (movie != null){
+            binding.movieTitleTextView.text = movie.title
+            binding.movieRatingTextView.text = movie.voteAverage.toString()
+            binding.movieReleaseDateTextView.text = movie.releaseDate
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        const val BUNDLE_EXTRA = "movie"
+        fun newInstance(bundle: Bundle): MovieFragment {
+            val fragment = MovieFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
