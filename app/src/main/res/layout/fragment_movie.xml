@@ -56,60 +56,37 @@
 
         </ImageView>
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            android:orientation="vertical">
+
         <TextView
             android:id="@+id/movie_genre_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_margin"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="parent"
             android:text="some movie genre"/>
-
-        <TextView
-            android:id="@+id/movie_lengths_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/main_margin"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/movie_genre_text_view"
-            android:text="115 min"/>
 
         <TextView
             android:id="@+id/movie_rating_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_margin"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/movie_lengths_text_view"
             android:text="7.5"/>
-
-        <TextView
-            android:id="@+id/movie_budget_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/main_margin"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/movie_rating_text_view"
-            android:text="Budget: 10000000$"/>
-
-        <TextView
-            android:id="@+id/movie_revenue_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/main_margin"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/movie_budget_text_view"
-            android:text="Revenue: 20000000$"/>
 
         <TextView
             android:id="@+id/movie_release_date_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_margin"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/movie_revenue_text_view"
             android:text="Release: 08.08.2022"/>
 
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -119,6 +96,7 @@
         android:layout_weight="1">
 
         <TextView
+            android:id="@+id/movie_overview_text_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/main_margin"

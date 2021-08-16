@@ -1,6 +1,7 @@
 package com.example.mycinemaapp.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,10 @@ class MovieFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        Log.d(
+            TAG,
+            "onCreateView() called with: inflater = $inflater, container = $container, savedInstanceState = $savedInstanceState"
+        )
         _binding = FragmentMovieBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -24,9 +29,14 @@ class MovieFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.getParcelable<MovieEntity>(BUNDLE_EXTRA)?.let {
-            binding.movieTitleTextView.text = it.title
-            binding.movieRatingTextView.text = it.voteAverage.toString()
-            binding.movieReleaseDateTextView.text = it.releaseDate
+            with(binding) {
+                movieTitleTextView.text = it.title
+                movieTitleOnEnglishTextView.text = it.original_title
+                movieGenreTextView.text = "Жанр ${it.genre_ids}"
+                movieRatingTextView.text = "Рэйтинг ${it.vote_average}"
+                movieReleaseDateTextView.text = it.release_date
+                movieOverviewTextView.text = it.overview
+            }
         }
     }
 

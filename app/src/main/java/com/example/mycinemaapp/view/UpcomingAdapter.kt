@@ -45,13 +45,13 @@ class UpcomingAdapter(
 
         fun bind(movie: MovieEntity) {
             setText(movie)
-            setPoster(movie.posterPath)
+            setPoster(movie.backdrop_path)
             setClickListener(movie)
         }
 
         private fun setText(movie: MovieEntity) {
             binding.titleTextView.text = movie.title
-            binding.yearTextView.text = movie.releaseDate
+            binding.yearTextView.text = movie.release_date.toString()
         }
 
         private fun setPoster(path: String?) {
