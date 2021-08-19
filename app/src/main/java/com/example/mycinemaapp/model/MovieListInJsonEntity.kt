@@ -1,6 +1,6 @@
 package com.example.mycinemaapp.model
 
-data class JsonMovieListEntity(
+data class MovieListInJsonEntity(
     val page: Int,
     val results: List<MovieEntity>,
     val total_pages: Int,

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.FragmentHomeBinding
 import com.example.mycinemaapp.model.MovieEntity
+import com.example.mycinemaapp.utils.showSnackBar
 import com.example.mycinemaapp.viewmodel.AppState
 import com.example.mycinemaapp.viewmodel.HomeViewModel
 
@@ -89,6 +90,7 @@ class HomeFragment : Fragment() {
         homeViewModel.getDataFromServer()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun renderData(appState: AppState) {
         Log.d(TAG, "renderData() called with: appState = $appState")
         when (appState) {
@@ -104,6 +106,7 @@ class HomeFragment : Fragment() {
             }
             is AppState.Error -> {
                 binding.loadingLayout.visibility = View.GONE
+                view?.showSnackBar("Ошибка!" , "Перезагрузить", {initViewModel()} )
             }
         }
     }

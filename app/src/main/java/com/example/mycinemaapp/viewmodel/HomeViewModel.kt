@@ -5,64 +5,53 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mycinemaapp.BuildConfig
-import com.example.mycinemaapp.model.JsonMovieListEntity
+import com.example.mycinemaapp.model.DataBaseMovieRepository
 import com.example.mycinemaapp.model.MovieEntity
-import com.google.gson.Gson
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.MalformedURLException
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
+import com.example.mycinemaapp.model.RetrofitHolder
+import com.example.mycinemaapp.model.WebDataBaseMoviesRepoImpl
 
 private const val TAG: String = "@@@ HomeViewModel"
+private const val UPCOMING: String = "upcoming"
+private const val NOW_PLAYING: String = "now_playing"
 
 class HomeViewModel(
-    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(),
+    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()
 ) : ViewModel() {
     fun getLiveData() = liveDataToObserve
+    private lateinit var dataBaseMovieRepository: DataBaseMovieRepository
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun getDataFromServer() {
         Log.d(TAG, "getDataFromServer() called")
         liveDataToObserve.value = AppState.Loading
-        try {
-            val uri =
-                URL("https://api.themoviedb.org/3/movie/now_playing?api_key=${BuildConfig.THE_MOVIE_DP_API_KEY}&language=ru-RU&page=1")
-            val uri2 =
-                URL("https://api.themoviedb.org/3/movie/upcoming?api_key=${BuildConfig.THE_MOVIE_DP_API_KEY}&language=ru-RU&page=1")
-            Thread {
-                lateinit var urlConnection: HttpsURLConnection
-                try {
-                    urlConnection = uri.openConnection() as HttpsURLConnection
-                    urlConnection.requestMethod = "GET"
-                    urlConnection.readTimeout = 10_000
-                    val gson = Gson()
-                    val bufferedReader =
-                        BufferedReader(InputStreamReader(urlConnection.inputStream))
-                    val jsonStr: String = bufferedReader.readLines().joinToString()
-                    val jsonMovieListEntity: JsonMovieListEntity = gson.fromJson(jsonStr, JsonMovieListEntity::class.java)
-                    Log.d(TAG, "jsonEntity = $jsonMovieListEntity")
-                    val parsedData = jsonMovieListEntity.results
-                    liveDataToObserve.postValue(
-                        AppState.Success(parsedData, parsedData))
-                } catch (e: MalformedURLException) {
-                    Log.e("", "Fail connection: ", e)
-                    e.printStackTrace()
-                    //Обработка ошибки
-                } finally {
-                    urlConnection.disconnect()
-                }
-            }.start()
-        } catch (e: MalformedURLException) {
-            Log.e("", "Fail URI: ", e)
-            e.printStackTrace()
-            //Обработка ошибки
+        var moviesListUpcoming: List<MovieEntity> = emptyList()
+        var moviesListNowPlaying: List<MovieEntity> = emptyList()
+
+
+
+        dataBaseMovieRepository = WebDataBaseMoviesRepoImpl(RetrofitHolder.retrofit)
+        with(dataBaseMovieRepository) {
+            getDataBaseRepos(UPCOMING, {
+                moviesListUpcoming = it
+            }, {
+                liveDataToObserve.value = AppState.Error(it)
+                Log.e(TAG, "getDataFromServer: Error ${it.message}")
+            })
+            getDataBaseRepos(NOW_PLAYING, {
+                moviesListNowPlaying = it
+            }, {
+                liveDataToObserve.value = AppState.Error(it)
+                Log.e(TAG, "getDataFromServer: Error ${it.message}")
+            })
         }
-    }
-    sealed class LoadState {
-        data class Success(val movieDataPlay: List<MovieEntity>, val movieDataCome: List<MovieEntity>) : LoadState()
-        data class Error(val error: Throwable) : LoadState()
-        object Loading : LoadState()
+
+        Thread {
+            while (moviesListNowPlaying.isEmpty() || moviesListUpcoming.isEmpty()) {
+                Thread.sleep(10)
+            }
+            liveDataToObserve.postValue(
+                AppState.Success(moviesListNowPlaying, moviesListUpcoming)
+            )
+        }.start()
     }
 }
