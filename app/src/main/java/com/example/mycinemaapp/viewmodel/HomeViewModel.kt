@@ -6,7 +6,8 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mycinemaapp.BuildConfig
-import com.example.mycinemaapp.model.JsonEntity
+import com.example.mycinemaapp.model.JsonMovieListEntity
+import com.example.mycinemaapp.model.MovieEntity
 import com.google.gson.Gson
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -28,6 +29,8 @@ class HomeViewModel(
         try {
             val uri =
                 URL("https://api.themoviedb.org/3/movie/now_playing?api_key=${BuildConfig.THE_MOVIE_DP_API_KEY}&language=ru-RU&page=1")
+            val uri2 =
+                URL("https://api.themoviedb.org/3/movie/upcoming?api_key=${BuildConfig.THE_MOVIE_DP_API_KEY}&language=ru-RU&page=1")
             Thread {
                 lateinit var urlConnection: HttpsURLConnection
                 try {
@@ -38,12 +41,11 @@ class HomeViewModel(
                     val bufferedReader =
                         BufferedReader(InputStreamReader(urlConnection.inputStream))
                     val jsonStr: String = bufferedReader.readLines().joinToString()
-                    val jsonEntity: JsonEntity = gson.fromJson(jsonStr, JsonEntity::class.java)
-                    Log.d(TAG, "jsonEntity = $jsonEntity")
-                    val parsedData = jsonEntity.results
+                    val jsonMovieListEntity: JsonMovieListEntity = gson.fromJson(jsonStr, JsonMovieListEntity::class.java)
+                    Log.d(TAG, "jsonEntity = $jsonMovieListEntity")
+                    val parsedData = jsonMovieListEntity.results
                     liveDataToObserve.postValue(
-                        AppState.Success(parsedData, parsedData)
-                    )
+                        AppState.Success(parsedData, parsedData))
                 } catch (e: MalformedURLException) {
                     Log.e("", "Fail connection: ", e)
                     e.printStackTrace()
@@ -57,5 +59,10 @@ class HomeViewModel(
             e.printStackTrace()
             //Обработка ошибки
         }
+    }
+    sealed class LoadState {
+        data class Success(val movieDataPlay: List<MovieEntity>, val movieDataCome: List<MovieEntity>) : LoadState()
+        data class Error(val error: Throwable) : LoadState()
+        object Loading : LoadState()
     }
 }
