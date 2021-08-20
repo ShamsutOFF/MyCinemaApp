@@ -27,8 +27,6 @@ class HomeViewModel(
         var moviesListUpcoming: List<MovieEntity> = emptyList()
         var moviesListNowPlaying: List<MovieEntity> = emptyList()
 
-
-
         dataBaseMovieRepository = WebDataBaseMoviesRepoImpl(RetrofitHolder.retrofit)
         with(dataBaseMovieRepository) {
             getDataBaseRepos(UPCOMING, {

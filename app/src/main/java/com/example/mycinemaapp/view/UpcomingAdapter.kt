@@ -4,11 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.ItemUpcomingBinding
 import com.example.mycinemaapp.model.MovieEntity
 
 private const val TAG: String = "@@@ NowPlayingAdapter"
+private const val BASE_POSTERS_PATH = "https://image.tmdb.org/t/p/w500/"
 
 class UpcomingAdapter(
     private var onItemViewClickListener:
@@ -45,7 +47,7 @@ class UpcomingAdapter(
 
         fun bind(movie: MovieEntity) {
             setText(movie)
-            setPoster(movie.backdrop_path)
+            setPoster(movie.poster_path)
             setClickListener(movie)
         }
 
@@ -58,7 +60,7 @@ class UpcomingAdapter(
             if (path == null) {
                 binding.posterImageView.setImageResource(R.drawable.default_movie_poster)
             } else {
-                //todo set image via glide
+                binding.posterImageView.load("$BASE_POSTERS_PATH$path")
             }
         }
 
