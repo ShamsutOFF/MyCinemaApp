@@ -17,6 +17,29 @@ class MovieFragment : Fragment() {
     private var _binding: FragmentMovieBinding? = null
     private val binding get() = _binding!!
 
+    // Временно вручную создадим Мар жанров, потом будем получать с сервера
+    val genresMap = mapOf<Int, String>(
+        28 to "боевик",
+        12 to "приключения",
+        16 to "мультфильм",
+        35 to "комедия",
+        80 to "криминал",
+        99 to "документальный",
+        18 to "драма",
+        10751 to "семейный",
+        14 to "фэнтези",
+        36 to "история",
+        27 to "ужасы",
+        10402 to "музыка",
+        9648 to "детектив",
+        10749 to "мелодрама",
+        878 to "фантастика",
+        10770 to "телевизионный фильм",
+        53 to "триллер",
+        10752 to "военный",
+        37 to "вестерн"
+    )
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -35,9 +58,13 @@ class MovieFragment : Fragment() {
                 posterImageView.load("$BASE_POSTERS_PATH${it.poster_path}")
                 movieTitleTextView.text = it.title
                 movieTitleOnEnglishTextView.text = it.original_title
-                movieGenreTextView.text = "Жанр ${it.genre_ids}"
+//                movieGenreTextView.text = "Жанр ${it.genre_ids}"
+
+                val subGenresString =
+                    buildString { it.genre_ids.forEach { append("\n" + genresMap[it]) } }
+                movieGenreTextView.text = "Жанр : $subGenresString"
                 movieRatingTextView.text = "Рэйтинг ${it.vote_average}"
-                movieReleaseDateTextView.text = it.release_date
+                movieReleaseDateTextView.text = "Дата релиза: ${it.release_date}"
                 movieOverviewTextView.text = it.overview
             }
         }
