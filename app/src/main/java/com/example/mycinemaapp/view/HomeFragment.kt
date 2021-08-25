@@ -87,7 +87,7 @@ class HomeFragment : Fragment() {
     private fun initViewModel() {
         Log.d(TAG, "initViewModel() called")
         homeViewModel.getLiveData().observe(viewLifecycleOwner) { renderData(it) }
-        homeViewModel.getDataFromServer()
+        homeViewModel.getMoviesListFromServer()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -95,6 +95,7 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "renderData() called with: appState = $appState")
         when (appState) {
             is AppState.Success -> {
+
                 binding.loadingLayout.visibility = View.GONE
                 adapterPlayNow.setData(appState.movieDataPlay)
                 adapterPlayNow.notifyDataSetChanged()

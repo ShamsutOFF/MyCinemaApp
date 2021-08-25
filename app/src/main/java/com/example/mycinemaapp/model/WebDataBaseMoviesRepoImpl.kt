@@ -8,11 +8,11 @@ import retrofit2.Retrofit
 
 private const val TAG: String = "@@@ WebDataBase"
 
-class WebDataBaseMoviesRepoImpl(private val retrofit: Retrofit) : DataBaseMovieRepository {
+class WebDataBaseMoviesRepoImpl(private val retrofit: Retrofit) : DataBaseMoviesRepository {
 
     private val service: MovieListWebService by lazy {retrofit.create(MovieListWebService::class.java)}
 
-    override fun getDataBaseRepos(
+    override fun getDataBaseMoviesRepos(
         typeOfRequestedMovies: String,
         onSuccess: (List<MovieEntity>) -> Unit,
         onError: (Throwable) -> Unit
