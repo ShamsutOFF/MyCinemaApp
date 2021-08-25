@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.40" />
+                app:layout_constraintGuide_percent="0.45" />
 
             <ImageView
                 android:id="@+id/poster_image_view"
@@ -113,6 +113,12 @@
                 android:text="Здесь будет описание какого-то умопомрачительного фильма. Это будет очень круто!" />
 
         </FrameLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Добавить в избранное"
+            android:layout_margin="@dimen/main_margin"/>
 
     </LinearLayout>
 

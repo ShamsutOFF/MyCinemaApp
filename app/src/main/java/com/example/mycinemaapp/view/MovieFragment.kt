@@ -71,7 +71,7 @@ class MovieFragment : Fragment() {
                     posterImageView.load("$BASE_POSTERS_PATH${movie.poster_path}")
                     movieTitleTextView.text = movie.title
                     movieTitleOnEnglishTextView.text = movie.original_title
-                    movieTaglineTextView.text = movie.tagline
+                    movieTaglineTextView.text = "Слоган: ${movie.tagline}"
 
                     val subGenresString =
                         buildString { movie.genres.forEach { append("\n" + it.name) } }

@@ -8,13 +8,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.mycinemaapp.databinding.FragmentNotificationsBinding
-import com.example.mycinemaapp.viewmodel.NotificationsViewModel
+import com.example.mycinemaapp.databinding.FragmentSettingsBinding
+import com.example.mycinemaapp.viewmodel.SettingsViewModel
 
-class NotificationsFragment : Fragment() {
+class SettingsFragment : Fragment() {
 
-    private lateinit var notificationsViewModel: NotificationsViewModel
-    private var _binding: FragmentNotificationsBinding? = null
+    private lateinit var settingsViewModel: SettingsViewModel
+    private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,14 +22,14 @@ class NotificationsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
+        settingsViewModel =
+            ViewModelProvider(this).get(SettingsViewModel::class.java)
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner, Observer {
+        settingsViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root
