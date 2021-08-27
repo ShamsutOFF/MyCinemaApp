@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.ItemUpcomingBinding
-import com.example.mycinemaapp.model.MovieEntity
+import com.example.mycinemaapp.model.movieEntitys.MovieEntity
 
 private const val TAG: String = "@@@ NowPlayingAdapter"
 private const val BASE_POSTERS_PATH = "https://image.tmdb.org/t/p/w500/"

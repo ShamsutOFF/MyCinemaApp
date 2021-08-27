@@ -2,6 +2,7 @@ package com.example.mycinemaapp.model
 
 import Json4KotlinBaseMovieDetailEntity
 import com.example.mycinemaapp.BuildConfig
+import com.example.mycinemaapp.model.movieEntitys.MovieListInJsonEntity
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

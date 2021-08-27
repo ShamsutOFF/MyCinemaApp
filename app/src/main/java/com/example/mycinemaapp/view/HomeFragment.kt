@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.FragmentHomeBinding
-import com.example.mycinemaapp.model.MovieEntity
+import com.example.mycinemaapp.model.movieEntitys.MovieEntity
 import com.example.mycinemaapp.utils.showSnackBar
 import com.example.mycinemaapp.viewmodel.AppState
 import com.example.mycinemaapp.viewmodel.HomeViewModel
@@ -95,7 +95,6 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "renderData() called with: appState = $appState")
         when (appState) {
             is AppState.Success -> {
-
                 binding.loadingLayout.visibility = View.GONE
                 adapterPlayNow.setData(appState.movieDataPlay)
                 adapterPlayNow.notifyDataSetChanged()

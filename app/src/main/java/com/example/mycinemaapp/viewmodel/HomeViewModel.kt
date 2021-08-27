@@ -1,21 +1,28 @@
 package com.example.mycinemaapp.viewmodel
 
+import android.graphics.Movie
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.mycinemaapp.model.DataBaseMoviesRepository
-import com.example.mycinemaapp.model.MovieEntity
 import com.example.mycinemaapp.model.MyApplication
 import com.example.mycinemaapp.model.WebDataBaseMoviesRepoImpl
+import com.example.mycinemaapp.model.movieEntitys.MovieEntity
+import com.example.mycinemaapp.model.paging.MovieRepository
+import kotlinx.coroutines.flow.Flow
 
 private const val TAG: String = "@@@ HomeViewModel"
 private const val UPCOMING: String = "upcoming"
 private const val NOW_PLAYING: String = "now_playing"
 
 class HomeViewModel(
-    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()
+    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(),
+    private val repository: MovieRepository
 ) : ViewModel() {
 
     fun getLiveData() = liveDataToObserve
@@ -46,6 +53,16 @@ class HomeViewModel(
         )
         return genresMap
     }
+
+
+        val movieLoadingStateLiveData = MutableLiveData<DataLoadingState>()
+        fun getMovies(): Flow<PagingData<Movie>> {
+            return repository.getMovies().cachedIn(viewModelScope)
+        }
+        fun onMovieClicked(movie: Movie) {
+            // TODO handle navigation to details screen event
+        }
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun getMoviesListFromServer() {

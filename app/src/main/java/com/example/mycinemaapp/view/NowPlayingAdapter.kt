@@ -1,5 +1,6 @@
 package com.example.mycinemaapp.view
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.ItemNowPlayingBinding
-import com.example.mycinemaapp.model.MovieEntity
+import com.example.mycinemaapp.model.movieEntitys.MovieEntity
 
 private const val TAG: String = "@@@ NowPlayingAdapter"
 private const val BASE_POSTERS_PATH = "https://image.tmdb.org/t/p/w500/"
@@ -19,6 +20,7 @@ class NowPlayingAdapter(
 
     private var movieData: List<MovieEntity> = emptyList()
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<MovieEntity>) {
         movieData = data
         notifyDataSetChanged()
@@ -54,7 +56,7 @@ class NowPlayingAdapter(
         private fun setText(movie: MovieEntity) {
             binding.titleTextView.text = movie.title
             binding.ratingTextView.text = movie.vote_average.toString()
-            binding.yearTextView.text = movie.release_date.toString()
+            binding.yearTextView.text = movie.release_date
         }
 
         private fun setPoster(path: String?) {

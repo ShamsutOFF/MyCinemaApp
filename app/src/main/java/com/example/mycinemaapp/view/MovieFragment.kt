@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.mycinemaapp.databinding.FragmentMovieBinding
-import com.example.mycinemaapp.model.MovieEntity
+import com.example.mycinemaapp.model.movieEntitys.MovieEntity
 import com.example.mycinemaapp.utils.showSnackBar
 import com.example.mycinemaapp.viewmodel.HomeViewModel
 import com.example.mycinemaapp.viewmodel.MovieFragmentAppState
