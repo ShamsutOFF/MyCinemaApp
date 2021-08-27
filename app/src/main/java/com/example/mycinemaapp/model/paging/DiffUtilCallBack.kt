@@ -1,15 +1,15 @@
 package com.example.mycinemaapp.model.paging
 
 import android.annotation.SuppressLint
-import android.graphics.Movie
 import androidx.recyclerview.widget.DiffUtil
+import com.example.mycinemaapp.model.movieEntitys.MovieEntity
 
-class DiffUtilCallBack  : DiffUtil.ItemCallback<Movie>() {
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+class DiffUtilCallBack  : DiffUtil.ItemCallback<MovieEntity>() {
+    override fun areItemsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
         return oldItem == newItem
     }
     @SuppressLint("DiffUtilEquals")
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+    override fun areContentsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
         return oldItem == newItem
     }
 }

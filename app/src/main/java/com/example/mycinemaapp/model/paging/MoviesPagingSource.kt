@@ -1,19 +1,25 @@
 package com.example.mycinemaapp.model.paging
 
-import android.graphics.Movie
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.mycinemaapp.model.movieEntitys.MovieEntity
 import retrofit2.HttpException
 import java.io.IOException
 
-class MoviesPagingSource : PagingSource<Int, Movie>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+private const val NOW_PLAYING: String = "now_playing"
+
+class MoviesPagingSource : PagingSource<Int, MovieEntity>() {
+    private lateinit var moviesRepository: MovieRepoImpl
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieEntity> {
         val position = params.key ?: MOVIES_STARTING_PAGE_INDEX
+
         return try {
+            var moviesListUpcoming: List<MovieEntity> = emptyList()
             // 1 Обращаемся к API и получаем MoviesResponse
-            val response = MovieApiClient.apiClient.getNowPlayingMovies(page = position)
+            moviesRepository.getMovies(NOW_PLAYING, position, { moviesListUpcoming = it}, {         })
             // 2 Через MoviesResponse получаем список фильмов
-            val movies = response.results
+            val movies = moviesListUpcoming
 
             // 3 Создаём объект класса Page - объект, который необходимо использовать при успешном получении
             // данных
@@ -35,7 +41,7 @@ class MoviesPagingSource : PagingSource<Int, Movie>() {
         private const val MOVIES_STARTING_PAGE_INDEX = 1
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, MovieEntity>): Int? {
         TODO("Not yet implemented")
     }
 }

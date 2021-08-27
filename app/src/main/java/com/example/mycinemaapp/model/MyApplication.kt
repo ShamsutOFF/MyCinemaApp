@@ -10,7 +10,7 @@ import java.io.IOException
 
 private const val BASE_URL = "https://api.themoviedb.org/3/"
 
-class MyApplication:Application(){
+class MyApplication : Application() {
 
     val retrofit: Retrofit by lazy {
         Retrofit.Builder()
@@ -26,7 +26,8 @@ class MyApplication:Application(){
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(interceptor)
         httpClient.addInterceptor(
-            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        )
         return httpClient.build()
     }
 

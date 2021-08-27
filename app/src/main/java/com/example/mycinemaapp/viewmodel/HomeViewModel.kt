@@ -1,6 +1,5 @@
 package com.example.mycinemaapp.viewmodel
 
-import android.graphics.Movie
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -21,45 +20,18 @@ private const val UPCOMING: String = "upcoming"
 private const val NOW_PLAYING: String = "now_playing"
 
 class HomeViewModel(
-    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(),
+    private val liveDataToObserve: MovieRepository = MutableLiveData(),
     private val repository: MovieRepository
 ) : ViewModel() {
 
     fun getLiveData() = liveDataToObserve
+
     private lateinit var dataBaseMoviesRepository: DataBaseMoviesRepository
-    fun getGenresMapFromServer(): Map<Int, String> {
-        var genresMap = emptyMap<Int, String>()
-        // Временно вручную создадим Мар жанров, потом будем получать с сервера
-        genresMap = mapOf<Int, String>(
-            28 to "боевик",
-            12 to "приключения",
-            16 to "мультфильм",
-            35 to "комедия",
-            80 to "криминал",
-            99 to "документальный",
-            18 to "драма",
-            10751 to "семейный",
-            14 to "фэнтези",
-            36 to "история",
-            27 to "ужасы",
-            10402 to "музыка",
-            9648 to "детектив",
-            10749 to "мелодрама",
-            878 to "фантастика",
-            10770 to "телевизионный фильм",
-            53 to "триллер",
-            10752 to "военный",
-            37 to "вестерн"
-        )
-        return genresMap
-    }
-
-
         val movieLoadingStateLiveData = MutableLiveData<DataLoadingState>()
-        fun getMovies(): Flow<PagingData<Movie>> {
+        fun getMovies(): Flow<PagingData<MovieEntity>> {
             return repository.getMovies().cachedIn(viewModelScope)
         }
-        fun onMovieClicked(movie: Movie) {
+        fun onMovieClicked(movie: MovieEntity) {
             // TODO handle navigation to details screen event
         }
 
