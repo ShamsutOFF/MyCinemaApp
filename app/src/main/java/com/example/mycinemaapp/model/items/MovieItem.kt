@@ -1,26 +1,26 @@
 package com.example.mycinemaapp.model.items
 
+import android.widget.Toast
+import coil.load
 import com.example.mycinemaapp.R
-import com.squareup.picasso.Picasso
+import com.example.mycinemaapp.model.entitys.MovieEntity
+import com.example.mycinemaapp.view.HomeFragment
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_with_text.*
 
+private const val BASE_POSTERS_PATH = "https://image.tmdb.org/t/p/w500/"
 
-class MovieItem(private val content: MovieContent) : Item() {
+class MovieItem(private val movie: MovieEntity) : Item() {
 
     override fun getLayout() = R.layout.item_with_text
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.description.text = content.title
-        Picasso.get()
-            .load(content.url)
-            .into(viewHolder.image_preview)
+        viewHolder.description.text = movie.title
+        viewHolder.image_preview.load("$BASE_POSTERS_PATH${movie.poster_path}")
+        viewHolder.itemView.setOnClickListener {
+            HomeFragment().onItemClick(movie)
+            Toast.makeText(viewHolder.itemView.context,movie.title,Toast.LENGTH_SHORT).show()
+        }
     }
 }
-
-
-data class MovieContent(
-    val title: String,
-    val url: String
-)

@@ -1,4 +1,4 @@
-package com.example.mycinemaapp.model
+package com.example.mycinemaapp.model.entitys
 
 data class MovieListInJsonEntity(
     val page: Int,

@@ -1,6 +1,7 @@
 package com.example.mycinemaapp.model
 
 import Json4KotlinBaseMovieDetailEntity
+import com.example.mycinemaapp.model.entitys.MovieEntity
 
 interface DataBaseMoviesRepository {
     fun getDataBaseMoviesRepos(

@@ -1,6 +1,8 @@
 package com.example.mycinemaapp.model
 
 import android.util.Log
+import com.example.mycinemaapp.model.entitys.MovieEntity
+import com.example.mycinemaapp.model.entitys.MovieListInJsonEntity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

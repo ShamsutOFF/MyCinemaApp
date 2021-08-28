@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.mycinemaapp.databinding.FragmentMovieBinding
-import com.example.mycinemaapp.model.MovieEntity
+import com.example.mycinemaapp.model.entitys.MovieEntity
 import com.example.mycinemaapp.utils.showSnackBar
 import com.example.mycinemaapp.viewmodel.HomeViewModel
 import com.example.mycinemaapp.viewmodel.MovieFragmentAppState
@@ -30,10 +30,6 @@ class MovieFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        Log.d(
-            TAG,
-            "onCreateView() called with: inflater = $inflater, container = $container, savedInstanceState = $savedInstanceState"
-        )
         _binding = FragmentMovieBinding.inflate(inflater, container, false)
 
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
