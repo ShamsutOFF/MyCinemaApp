@@ -1,13 +1,13 @@
-package com.example.mycinemaapp.ui.notifications
+package com.example.mycinemaapp.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NotificationsViewModel : ViewModel() {
+class FavoritesViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+        value = "This is favorites Fragment"
     }
     val text: LiveData<String> = _text
 }
