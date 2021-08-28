@@ -27,9 +27,6 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeForGroupieBinding? = null
 
     val movies = listOf(
-        getPopularMovies(),
-        getPopularMovies(),
-        getPopularMovies(),
         getPopularMovies()
     )
 

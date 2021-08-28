@@ -20,31 +20,19 @@ class HomeViewModel(
 
     fun getLiveData() = liveDataToObserve
     private lateinit var dataBaseMoviesRepository: DataBaseMoviesRepository
-    fun getGenresMapFromServer(): Map<Int, String> {
-        var genresMap = emptyMap<Int, String>()
-        // Временно вручную создадим Мар жанров, потом будем получать с сервера
-        genresMap = mapOf<Int, String>(
-            28 to "боевик",
-            12 to "приключения",
-            16 to "мультфильм",
-            35 to "комедия",
-            80 to "криминал",
-            99 to "документальный",
-            18 to "драма",
-            10751 to "семейный",
-            14 to "фэнтези",
-            36 to "история",
-            27 to "ужасы",
-            10402 to "музыка",
-            9648 to "детектив",
-            10749 to "мелодрама",
-            878 to "фантастика",
-            10770 to "телевизионный фильм",
-            53 to "триллер",
-            10752 to "военный",
-            37 to "вестерн"
-        )
-        return genresMap
+
+
+    fun getOneMoviesListFromServer() {
+        liveDataToObserve.value = AppState.Loading
+        dataBaseMoviesRepository = WebDataBaseMoviesRepoImpl(MyApplication().retrofit)
+        with(dataBaseMoviesRepository) {
+            getDataBaseMoviesRepos(UPCOMING, {
+                liveDataToObserve.value = AppState.SuccessOneList(it)
+            }, {
+                liveDataToObserve.value = AppState.Error(it)
+                Log.e(TAG, "getDataFromServer: Error ${it.message}")
+            })
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
