@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,9 +28,9 @@ class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
 
     private var _binding: FragmentHomeForGroupieBinding? = null
-    private val adapter =  GroupAdapter<GroupieViewHolder>()
-
+    private val adapter = GroupAdapter<GroupieViewHolder>()
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,12 +39,12 @@ class HomeFragment : Fragment() {
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         _binding = FragmentHomeForGroupieBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
-    fun onItemClick(movie: MovieEntity) {
-        Toast.makeText(context,movie.id,Toast.LENGTH_SHORT).show()
-            activity?.supportFragmentManager?.apply {
+    fun onItemClick( movie: MovieEntity) {
+        Log.d(TAG, "onItemClick() called with: movie = $movie")
+        activity?.supportFragmentManager?.apply {
+                Log.d(TAG, "onItemViewClick() called")
                 beginTransaction()
                     .add(R.id.container, MovieFragment.newInstance(Bundle().apply {
                         putParcelable(MovieFragment.BUNDLE_EXTRA, movie)
@@ -53,20 +52,16 @@ class HomeFragment : Fragment() {
                     .addToBackStack("")
                     .commitAllowingStateLoss()
             }
-        }
-
-
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initViewModel()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun initViewModel() {
-        Log.d(TAG, "initViewModel() called")
         homeViewModel.getLiveData().observe(viewLifecycleOwner) { renderData(it) }
         homeViewModel.getOneMoviesListFromServer(UPCOMING)
         homeViewModel.getOneMoviesListFromServer(NOW_PLAYING)
@@ -80,17 +75,13 @@ class HomeFragment : Fragment() {
             is AppState.SuccessOneList -> {
                 var moviesItemList = mutableListOf<MovieItem>()
                 appState.movieEntityList.forEach { moviesItemList.add(MovieItem(it)) }
-                val mainCardContainer = MainCardContainer("Список фильмов", appState.typeOfMovies, ::onItemClick,moviesItemList )
-//                val movies = mutableListOf<MainCardContainer>()
-//                movies.add(mainCardContainer)
-                binding.itemsContainer.adapter = adapter.apply { add (mainCardContainer) }
-            }
-            is AppState.Success -> {//
-//                binding.loadingLayout.visibility = View.GONE
-//                adapterPlayNow.setData(appState.movieDataPlay)
-//                adapterPlayNow.notifyDataSetChanged()
-//                adapterUpcoming.setData(appState.movieDataCome)
-//                adapterUpcoming.notifyDataSetChanged()
+                val mainCardContainer = MainCardContainer(
+                    "Список фильмов",
+                    appState.typeOfMovies,
+                    ::onItemClick,
+                    moviesItemList
+                )
+                binding.itemsContainer.adapter = adapter.apply { add(mainCardContainer) }
             }
             is AppState.Loading -> {
 //                binding.loadingLayout.visibility = View.VISIBLE

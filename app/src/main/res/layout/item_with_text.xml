@@ -12,14 +12,14 @@
     tools:ignore="RtlHardcoded">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="96dp"
-        android:layout_height="120dp"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
         app:cardCornerRadius="7dp">
 
         <ImageView
             android:id="@+id/image_preview"
-            android:layout_width="96dp"
-            android:layout_height="120dp"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
             android:scaleType="centerCrop" />
     </androidx.cardview.widget.CardView>
 

@@ -29,37 +29,4 @@ class HomeViewModel(
             })
         }
     }
-
-//    @RequiresApi(Build.VERSION_CODES.N)
-//    fun getMoviesListFromServer() {
-//        Log.d(TAG, "getDataFromServer() called")
-//        liveDataToObserve.value = AppState.Loading
-//        var moviesListUpcoming: List<MovieEntity> = emptyList()
-//        var moviesListNowPlaying: List<MovieEntity> = emptyList()
-//
-//        dataBaseMoviesRepository = WebDataBaseMoviesRepoImpl(MyApplication().retrofit)
-//        with(dataBaseMoviesRepository) {
-//            getDataBaseMoviesRepos(UPCOMING, {
-//                moviesListUpcoming = it
-//            }, {
-//                liveDataToObserve.value = AppState.Error(it)
-//                Log.e(TAG, "getDataFromServer: Error ${it.message}")
-//            })
-//            getDataBaseMoviesRepos(NOW_PLAYING, {
-//                moviesListNowPlaying = it
-//            }, {
-//                liveDataToObserve.value = AppState.Error(it)
-//                Log.e(TAG, "getDataFromServer: Error ${it.message}")
-//            })
-//        }
-//
-//        Thread {
-//            while (moviesListNowPlaying.isEmpty() || moviesListUpcoming.isEmpty()) {
-//                Thread.sleep(10)
-//            }
-//            liveDataToObserve.postValue(
-//                AppState.Success(moviesListNowPlaying, moviesListUpcoming)
-//            )
-//        }.start()
-//    }
 }

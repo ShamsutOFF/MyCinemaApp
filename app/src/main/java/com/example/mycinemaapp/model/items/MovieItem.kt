@@ -19,8 +19,8 @@ class MovieItem(private val movie: MovieEntity) : Item() {
         viewHolder.description.text = movie.title
         viewHolder.image_preview.load("$BASE_POSTERS_PATH${movie.poster_path}")
         viewHolder.itemView.setOnClickListener {
-            HomeFragment().onItemClick(movie)
             Toast.makeText(viewHolder.itemView.context,movie.title,Toast.LENGTH_SHORT).show()
+            HomeFragment().onItemClick(movie)
         }
     }
 }

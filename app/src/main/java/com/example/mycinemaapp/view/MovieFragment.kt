@@ -13,7 +13,6 @@ import coil.load
 import com.example.mycinemaapp.databinding.FragmentMovieBinding
 import com.example.mycinemaapp.model.entitys.MovieEntity
 import com.example.mycinemaapp.utils.showSnackBar
-import com.example.mycinemaapp.viewmodel.HomeViewModel
 import com.example.mycinemaapp.viewmodel.MovieFragmentAppState
 import com.example.mycinemaapp.viewmodel.MovieViewModel
 
@@ -24,15 +23,12 @@ class MovieFragment : Fragment() {
     private var _binding: FragmentMovieBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var homeViewModel: HomeViewModel
     private lateinit var movieViewModel: MovieViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMovieBinding.inflate(inflater, container, false)
-
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         movieViewModel = ViewModelProvider(this).get(MovieViewModel::class.java)
 
         return binding.root
