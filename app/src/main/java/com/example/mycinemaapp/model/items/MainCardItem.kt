@@ -19,7 +19,7 @@ class MainCardContainer(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.title_text_view.text = title
-        viewHolder.description_text_view.text = description
+//        viewHolder.description_text_view.text = description
         viewHolder.items_container.adapter = GroupAdapter<GroupieViewHolder>().apply { addAll(items) }
     }
 }

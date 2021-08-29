@@ -23,6 +23,8 @@ private const val TAG: String = "@@@ HomeFragment"
 private const val UPCOMING: String = "upcoming"
 private const val NOW_PLAYING: String = "now_playing"
 private const val TOP_RATED: String = "top_rated"
+private const val LATEST: String = "latest"
+private const val POPULAR: String = "popular"
 
 class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
@@ -41,17 +43,19 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    fun onItemClick( movie: MovieEntity) {
+    fun onItemClick(movie: MovieEntity) {
+        //Здесь Активити NULL
+//        Toast.makeText(this, movie, Toast.LENGTH_SHORT).show()
         Log.d(TAG, "onItemClick() called with: movie = $movie")
         activity?.supportFragmentManager?.apply {
-                Log.d(TAG, "onItemViewClick() called")
-                beginTransaction()
-                    .add(R.id.container, MovieFragment.newInstance(Bundle().apply {
-                        putParcelable(MovieFragment.BUNDLE_EXTRA, movie)
-                    }))
-                    .addToBackStack("")
-                    .commitAllowingStateLoss()
-            }
+            Log.d(TAG, "onItemViewClick() called")
+            beginTransaction()
+                .add(R.id.container, MovieFragment.newInstance(Bundle().apply {
+                    putParcelable(MovieFragment.BUNDLE_EXTRA, movie)
+                }))
+                .addToBackStack("")
+                .commitAllowingStateLoss()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -76,12 +80,29 @@ class HomeFragment : Fragment() {
                 var moviesItemList = mutableListOf<MovieItem>()
                 appState.movieEntityList.forEach { moviesItemList.add(MovieItem(it)) }
                 val mainCardContainer = MainCardContainer(
-                    "Список фильмов",
-                    appState.typeOfMovies,
+                    when (appState.typeOfMovies) {
+                        UPCOMING -> {
+                            resources.getString(R.string.upcoming)
+                        }
+                        NOW_PLAYING -> {
+                            resources.getString(R.string.now_playing)
+                        }
+                        LATEST -> {
+                            resources.getString(R.string.latest)
+                        }
+                        POPULAR -> {
+                            resources.getString(R.string.popular)
+                        }
+                        TOP_RATED -> {
+                            resources.getString(R.string.top_rated)
+                        }
+                        else -> ""
+                    }, "description will be here",
                     ::onItemClick,
                     moviesItemList
                 )
-                binding.itemsContainer.adapter = adapter.apply { add(mainCardContainer) }
+                binding.itemsContainer.adapter =
+                    adapter.apply { add(mainCardContainer) }
             }
             is AppState.Loading -> {
 //                binding.loadingLayout.visibility = View.VISIBLE
