@@ -11,8 +11,9 @@ private const val BASE_POSTERS_PATH = "https://image.tmdb.org/t/p/w500/"
 
 class MovieItem(
     private val movie: MovieEntity,
-    private val onClick: (movie: MovieEntity) -> Unit,
-    private val character:String
+    private val onClick: (character: String, id: Int) -> Unit,
+//    private val onClick: (movie: MovieEntity) -> Unit,
+    private val character: String
 ) : Item() {
 
     override fun getLayout() = R.layout.item_movie
@@ -25,7 +26,7 @@ class MovieItem(
         }
         viewHolder.image_preview.load("$BASE_POSTERS_PATH${movie.posterPath}")
         viewHolder.itemView.setOnClickListener {
-            onClick.invoke(movie)
+            onClick.invoke(character, movie.id)
         }
     }
 }

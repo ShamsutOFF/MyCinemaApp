@@ -12,10 +12,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.FragmentHomeBinding
-import com.example.mycinemaapp.model.entitys.MovieEntity
 import com.example.mycinemaapp.model.items.MainCardContainer
 import com.example.mycinemaapp.model.items.MovieItem
 import com.example.mycinemaapp.utils.showSnackBar
+import com.example.mycinemaapp.view.MovieFragment.Companion.BUNDLE_CHARACTER
+import com.example.mycinemaapp.view.MovieFragment.Companion.BUNDLE_ID
 import com.example.mycinemaapp.viewmodel.AppState
 import com.example.mycinemaapp.viewmodel.HomeViewModel
 import com.xwray.groupie.GroupAdapter
@@ -49,11 +50,12 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    private fun onItemClick(movie: MovieEntity) {
+    private fun onItemClick(character:String, id:Int) {
         activity?.supportFragmentManager?.apply {
             beginTransaction()
                 .add(R.id.container, MovieFragment.newInstance(Bundle().apply {
-                    putParcelable(MovieFragment.BUNDLE_EXTRA, movie)
+                    putString(BUNDLE_CHARACTER, character)
+                    putInt(BUNDLE_ID, id)
                 }))
 //                  .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN) // Тест анимации
                 .addToBackStack("")
@@ -70,12 +72,19 @@ class HomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun initViewModel() {
         homeViewModel.movieLoadingLiveData.observe(viewLifecycleOwner) { renderData(it) }
-        readSettings()
+        val settings = readSettings()
+        loadMovies(settings)
+    }
+
+    private fun loadMovies(settings: MutableSet<String>?) {
+        settings?.forEach {
+            val separated = it.split("/").toTypedArray()
+            homeViewModel.loadMoviesListFromServer(separated[0], separated[1])
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun renderData(appState: AppState) {
-        Log.d(TAG, "renderData() called with: appState = $appState")
         when (appState) {
             is AppState.SuccessOneList -> {
                 val moviesItemList = mutableListOf<MovieItem>()
@@ -146,7 +155,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun readSettings() {
+    private fun readSettings(): MutableSet<String>? {
         val defSet = setOf(DEFAULT_CATEGORY)
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
         val editor = sharedPref?.edit()
@@ -159,10 +168,7 @@ class HomeFragment : Fragment() {
             editor?.apply()
             settings = sharedPref?.getStringSet(SETTINGS_KEY, defSet)
         }
-        settings?.forEach {
-            val separated = it.split("/").toTypedArray()
-            homeViewModel.loadMoviesListFromServer(separated[0], separated[1])
-        }
+        return settings
     }
 
     override fun onDestroyView() {

@@ -13,8 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.FragmentMovieBinding
-import com.example.mycinemaapp.model.entitys.MovieEntity
-import com.example.mycinemaapp.utils.showSnackBar
 import com.example.mycinemaapp.viewmodel.MovieFragmentAppState
 import com.example.mycinemaapp.viewmodel.MovieViewModel
 
@@ -39,19 +37,18 @@ class MovieFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        arguments?.getParcelable<MovieEntity>(BUNDLE_EXTRA)?.id?.let {
-            initViewModel(
-                it
-            )
-        }
+            initViewModel()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun initViewModel(id: Int) {
-        Log.d(TAG, "initViewModel() called")
+    private fun initViewModel() {
         movieViewModel.movieDetailLiveDataToObserve.observe(viewLifecycleOwner) { renderData(it) }
-        movieViewModel.getMovieEntityFromServer(id)
+        val character = arguments?.getString(BUNDLE_CHARACTER)
+        val id = arguments?.getInt(BUNDLE_ID)
+        if (character != null && id != null) {
+            Log.d(TAG, "initViewModel() called character = $character id = $id" )
+        movieViewModel.getMovieEntityFromServer(character, id)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -59,19 +56,27 @@ class MovieFragment : Fragment() {
         when (movieFragmentAppState) {
             is MovieFragmentAppState.Success -> {
                 val movie = movieFragmentAppState.movieDetailData
-
+                Log.d(
+                    TAG,
+                    "renderData() called with: movieFragmentAppState = $movieFragmentAppState"
+                )
                 with(binding) {
                     loadingLayout.visibility = View.GONE
                     posterImageView.load("$BASE_POSTERS_PATH${movie.posterPath}")
                     movieOverviewTextView.movementMethod = ScrollingMovementMethod()
-                    movieTitleTextView.text = movie.title
-                    movieTitleOnEnglishTextView.text = movie.originalTitle
-                    movieTaglineTextView.text = getString((R.string.tagline),movie.tagline)
+                    movie.title.let { movieTitleTextView.text = movie.title }
+                    movie.name.let { movieTitleTextView.text = movie.name }
+                    movie.originalTitle.let { movieTitleOnEnglishTextView.text = movie.originalTitle }
+                    movie.originalName.let { movieTitleOnEnglishTextView.text = movie.originalName }
+                    movie.tagline.let { movieTaglineTextView.text = getString((R.string.tagline), movie.tagline) }
                     val subGenresString =
                         buildString { movie.genres.forEach { append("\n" + it.name) } }
-                    movieGenreTextView.text = resources.getString((R.string.genres), subGenresString)
-                    movieRatingTextView.text = resources.getString((R.string.vote_average), movie.voteAverage.toString())
-                    movieReleaseDateTextView.text = resources.getString((R.string.release_date),movie.releaseDate)
+                    movieGenreTextView.text =
+                        resources.getString((R.string.genres), subGenresString)
+                    movieRatingTextView.text =
+                        resources.getString((R.string.vote_average), movie.voteAverage.toString())
+                    movie.releaseDate.let { movieReleaseDateTextView.text =
+                        resources.getString((R.string.release_date), movie.releaseDate) }
                     movieOverviewTextView.text = movie.overview
                 }
             }
@@ -80,7 +85,7 @@ class MovieFragment : Fragment() {
             }
             is MovieFragmentAppState.Error -> {
                 binding.loadingLayout.visibility = View.GONE
-                view?.showSnackBar("Ошибка!" , "Перезагрузить", {initViewModel(id) } )
+//                view?.showSnackBar("Ошибка!", "Перезагрузить", { initViewModel() })
             }
         }
     }
@@ -91,7 +96,8 @@ class MovieFragment : Fragment() {
     }
 
     companion object {
-        const val BUNDLE_EXTRA = "movie"
+        const val BUNDLE_CHARACTER = "character"
+        const val BUNDLE_ID = "id"
         fun newInstance(bundle: Bundle): MovieFragment {
             val fragment = MovieFragment()
             fragment.arguments = bundle

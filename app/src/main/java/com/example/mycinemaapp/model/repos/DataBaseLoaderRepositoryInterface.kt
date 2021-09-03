@@ -1,6 +1,6 @@
 package com.example.mycinemaapp.model.repos
 
-import Json4KotlinBaseMovieDetailEntity
+import MovieDetailEntity
 import com.example.mycinemaapp.model.entitys.MovieEntity
 
 interface DataBaseMoviesRepositoryInterface {
@@ -14,8 +14,9 @@ interface DataBaseMoviesRepositoryInterface {
 
 interface DataBaseDetailMovieRepositoryInterface {
     fun getDataBaseDetailMovieRepos(
+        character: String,
         movieId : Int,
-        onSuccess: (Json4KotlinBaseMovieDetailEntity) -> Unit,
+        onSuccess: (MovieDetailEntity) -> Unit,
         onError: (Throwable) -> Unit
     )
 }

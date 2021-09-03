@@ -1,6 +1,6 @@
 package com.example.mycinemaapp.model
 
-import Json4KotlinBaseMovieDetailEntity
+import MovieDetailEntity
 import com.example.mycinemaapp.BuildConfig
 import com.example.mycinemaapp.model.entitys.MovieListInJsonEntity
 import retrofit2.Call
@@ -16,6 +16,9 @@ interface MovieListWebServiceInt {
 }
 
 interface MovieDetailWebServiceInt {
-    @GET("movie/{movieId}?api_key=${BuildConfig.THE_MOVIE_DP_API_KEY}&language=RU")
-    fun getMovieDetailFromServer(@Path("movieId")movieId : Int) : Call<Json4KotlinBaseMovieDetailEntity>
+    @GET("{character}/{movieId}?api_key=${BuildConfig.THE_MOVIE_DP_API_KEY}&language=RU")
+    fun getMovieDetailFromServer(
+        @Path("character")character : String,
+        @Path("movieId")movieId : Int
+    ) : Call<MovieDetailEntity>
 }

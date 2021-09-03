@@ -1,7 +1,6 @@
 package com.example.mycinemaapp.model.items
 
 import com.example.mycinemaapp.R
-import com.example.mycinemaapp.model.entitys.MovieEntity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -10,7 +9,8 @@ import kotlinx.android.synthetic.main.item_card.*
 class MainCardContainer(
     private val title: String? = "",
     private val description: String? = "",
-    private val onClick: (movie: MovieEntity) -> Unit,
+    private val onClick: (character: String, id: Int) -> Unit,
+//    private val onClick: (movie: MovieEntity) -> Unit,
     private val items: List<Item>
 ) : Item() {
 

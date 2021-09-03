@@ -1,6 +1,6 @@
 package com.example.mycinemaapp.model.repos
 
-import Json4KotlinBaseMovieDetailEntity
+import MovieDetailEntity
 import com.example.mycinemaapp.model.MovieDetailWebServiceInt
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,15 +15,16 @@ class WebDataBaseMovieDetailRepoImpl(private val retrofit: Retrofit) :
     private val serviceInt: MovieDetailWebServiceInt by lazy {retrofit.create(MovieDetailWebServiceInt::class.java)}
 
     override fun getDataBaseDetailMovieRepos(
+        character: String,
         movieId: Int,
-        onSuccess: (Json4KotlinBaseMovieDetailEntity) -> Unit,
+        onSuccess: (MovieDetailEntity) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        serviceInt.getMovieDetailFromServer(movieId).enqueue(object :
-            Callback<Json4KotlinBaseMovieDetailEntity> {
+        serviceInt.getMovieDetailFromServer(character, movieId).enqueue(object :
+            Callback<MovieDetailEntity> {
             override fun onResponse(
-                call: Call<Json4KotlinBaseMovieDetailEntity>,
-                response: Response<Json4KotlinBaseMovieDetailEntity>
+                call: Call<MovieDetailEntity>,
+                response: Response<MovieDetailEntity>
             ) {
                 if (response.isSuccessful) {
                     onSuccess(response.body()!!)
@@ -33,7 +34,7 @@ class WebDataBaseMovieDetailRepoImpl(private val retrofit: Retrofit) :
                 }
             }
 
-            override fun onFailure(call: Call<Json4KotlinBaseMovieDetailEntity>, t: Throwable) {
+            override fun onFailure(call: Call<MovieDetailEntity>, t: Throwable) {
                 onError(t)
             }
         })
