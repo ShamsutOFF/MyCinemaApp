@@ -3,28 +3,26 @@ package com.example.mycinemaapp.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mycinemaapp.model.DataBaseMoviesRepository
 import com.example.mycinemaapp.model.MyApplication
-import com.example.mycinemaapp.model.WebDataBaseMoviesRepoImpl
+import com.example.mycinemaapp.model.repos.DataBaseMoviesRepositoryInterface
+import com.example.mycinemaapp.model.repos.WebDataBaseMoviesRepoImpl
 
 private const val TAG: String = "@@@ HomeViewModel"
 
 class HomeViewModel(
-    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()
+    val movieLoadingLiveData: MutableLiveData<AppState> = MutableLiveData()
 ) : ViewModel() {
 
-    fun getLiveData() = liveDataToObserve
-    private lateinit var dataBaseMoviesRepository: DataBaseMoviesRepository
+    private lateinit var dataBaseMoviesRepositoryInterface: DataBaseMoviesRepositoryInterface
 
-
-    fun getOneMoviesListFromServer(typeOfMovies: String) {
-        liveDataToObserve.value = AppState.Loading
-        dataBaseMoviesRepository = WebDataBaseMoviesRepoImpl(MyApplication().retrofit)
-        with(dataBaseMoviesRepository) {
-            getDataBaseMoviesRepos(typeOfMovies, {
-                liveDataToObserve.value = AppState.SuccessOneList(typeOfMovies, it)
+    fun loadMoviesListFromServer(character:String, typeOfMovies: String) {
+        movieLoadingLiveData.value = AppState.Loading
+        dataBaseMoviesRepositoryInterface = WebDataBaseMoviesRepoImpl(MyApplication().retrofit)
+        with(dataBaseMoviesRepositoryInterface) {
+            getDataBaseMoviesRepos(character, typeOfMovies, {
+                movieLoadingLiveData.value = AppState.SuccessOneList(character,typeOfMovies, it)
             }, {
-                liveDataToObserve.value = AppState.Error(it)
+                movieLoadingLiveData.value = AppState.Error(it)
                 Log.e(TAG, "getDataFromServer: Error ${it.message}")
             })
         }

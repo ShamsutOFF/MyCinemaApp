@@ -2,6 +2,7 @@ package com.example.mycinemaapp.view
 
 import android.os.Build
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +11,13 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
+import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.FragmentMovieBinding
 import com.example.mycinemaapp.model.entitys.MovieEntity
 import com.example.mycinemaapp.utils.showSnackBar
 import com.example.mycinemaapp.viewmodel.MovieFragmentAppState
 import com.example.mycinemaapp.viewmodel.MovieViewModel
+
 
 private const val TAG: String = "@@@ MovieFragment"
 private const val BASE_POSTERS_PATH = "https://image.tmdb.org/t/p/w500/"
@@ -30,7 +33,6 @@ class MovieFragment : Fragment() {
     ): View {
         _binding = FragmentMovieBinding.inflate(inflater, container, false)
         movieViewModel = ViewModelProvider(this).get(MovieViewModel::class.java)
-
         return binding.root
     }
 
@@ -48,7 +50,7 @@ class MovieFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun initViewModel(id: Int) {
         Log.d(TAG, "initViewModel() called")
-        movieViewModel.getLiveData().observe(viewLifecycleOwner) { renderData(it) }
+        movieViewModel.movieDetailLiveDataToObserve.observe(viewLifecycleOwner) { renderData(it) }
         movieViewModel.getMovieEntityFromServer(id)
     }
 
@@ -60,17 +62,16 @@ class MovieFragment : Fragment() {
 
                 with(binding) {
                     loadingLayout.visibility = View.GONE
-                    posterImageView.load("$BASE_POSTERS_PATH${movie.poster_path}")
+                    posterImageView.load("$BASE_POSTERS_PATH${movie.posterPath}")
+                    movieOverviewTextView.movementMethod = ScrollingMovementMethod()
                     movieTitleTextView.text = movie.title
-                    movieTitleOnEnglishTextView.text = movie.original_title
-                    movieTaglineTextView.text = "Слоган: ${movie.tagline}"
-
+                    movieTitleOnEnglishTextView.text = movie.originalTitle
+                    movieTaglineTextView.text = getString((R.string.tagline),movie.tagline)
                     val subGenresString =
                         buildString { movie.genres.forEach { append("\n" + it.name) } }
-                    movieGenreTextView.text = "Жанр : $subGenresString"
-
-                    movieRatingTextView.text = "Рэйтинг ${movie.vote_average}"
-                    movieReleaseDateTextView.text = "Дата релиза: ${movie.release_date}"
+                    movieGenreTextView.text = resources.getString((R.string.genres), subGenresString)
+                    movieRatingTextView.text = resources.getString((R.string.vote_average), movie.voteAverage.toString())
+                    movieReleaseDateTextView.text = resources.getString((R.string.release_date),movie.releaseDate)
                     movieOverviewTextView.text = movie.overview
                 }
             }

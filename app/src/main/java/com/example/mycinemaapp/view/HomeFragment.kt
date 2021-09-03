@@ -1,5 +1,6 @@
 package com.example.mycinemaapp.view
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,26 +11,31 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.mycinemaapp.R
-import com.example.mycinemaapp.databinding.FragmentHomeForGroupieBinding
+import com.example.mycinemaapp.databinding.FragmentHomeBinding
 import com.example.mycinemaapp.model.entitys.MovieEntity
 import com.example.mycinemaapp.model.items.MainCardContainer
 import com.example.mycinemaapp.model.items.MovieItem
+import com.example.mycinemaapp.utils.showSnackBar
 import com.example.mycinemaapp.viewmodel.AppState
 import com.example.mycinemaapp.viewmodel.HomeViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 private const val TAG: String = "@@@ HomeFragment"
-private const val UPCOMING: String = "upcoming"
+private const val SETTINGS_KEY = "SETTINGS_KEY"
+
+private const val MOVIE: String = "movie"
+private const val DEFAULT_CATEGORY: String = "movie/now_playing"
 private const val NOW_PLAYING: String = "now_playing"
-private const val TOP_RATED: String = "top_rated"
-private const val LATEST: String = "latest"
 private const val POPULAR: String = "popular"
+private const val TOP_RATED: String = "top_rated"
+private const val UPCOMING: String = "upcoming"
+private const val AIRING_TODAY_TV: String = "airing_today"
 
 class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
 
-    private var _binding: FragmentHomeForGroupieBinding? = null
+    private var _binding: FragmentHomeBinding? = null
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val binding get() = _binding!!
 
@@ -39,20 +45,17 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        _binding = FragmentHomeForGroupieBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    fun onItemClick(movie: MovieEntity) {
-        //Здесь Активити NULL
-//        Toast.makeText(this, movie, Toast.LENGTH_SHORT).show()
-        Log.d(TAG, "onItemClick() called with: movie = $movie")
+    private fun onItemClick(movie: MovieEntity) {
         activity?.supportFragmentManager?.apply {
-            Log.d(TAG, "onItemViewClick() called")
             beginTransaction()
                 .add(R.id.container, MovieFragment.newInstance(Bundle().apply {
                     putParcelable(MovieFragment.BUNDLE_EXTRA, movie)
                 }))
+//                  .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN) // Тест анимации
                 .addToBackStack("")
                 .commitAllowingStateLoss()
         }
@@ -66,10 +69,8 @@ class HomeFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun initViewModel() {
-        homeViewModel.getLiveData().observe(viewLifecycleOwner) { renderData(it) }
-        homeViewModel.getOneMoviesListFromServer(UPCOMING)
-        homeViewModel.getOneMoviesListFromServer(NOW_PLAYING)
-        homeViewModel.getOneMoviesListFromServer(TOP_RATED)
+        homeViewModel.movieLoadingLiveData.observe(viewLifecycleOwner) { renderData(it) }
+        readSettings()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -77,52 +78,96 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "renderData() called with: appState = $appState")
         when (appState) {
             is AppState.SuccessOneList -> {
-                var moviesItemList = mutableListOf<MovieItem>()
-                appState.movieEntityList.forEach { moviesItemList.add(MovieItem(it)) }
+                val moviesItemList = mutableListOf<MovieItem>()
+                appState.movieEntityList.forEach {
+                    moviesItemList.add(
+                        MovieItem(
+                            it,
+                            ::onItemClick,
+                            appState.character
+                        )
+                    )
+                }
                 val mainCardContainer = MainCardContainer(
-                    when (appState.typeOfMovies) {
-                        UPCOMING -> {
-                            resources.getString(R.string.upcoming)
-                        }
-                        NOW_PLAYING -> {
-                            resources.getString(R.string.now_playing)
-                        }
-                        LATEST -> {
-                            resources.getString(R.string.latest)
-                        }
-                        POPULAR -> {
-                            resources.getString(R.string.popular)
-                        }
-                        TOP_RATED -> {
-                            resources.getString(R.string.top_rated)
-                        }
-                        else -> ""
-                    }, "description will be here",
+                    getMovieType(appState.character, appState.typeOfMovies),
+                    "description will be here",
                     ::onItemClick,
                     moviesItemList
                 )
-                binding.itemsContainer.adapter =
-                    adapter.apply { add(mainCardContainer) }
+                binding.itemsContainer.adapter = adapter.apply { add(mainCardContainer) }
+                binding.loadingLayout.visibility = View.GONE
             }
             is AppState.Loading -> {
-//                binding.loadingLayout.visibility = View.VISIBLE
+                binding.loadingLayout.visibility = View.VISIBLE
             }
             is AppState.Error -> {
-//                binding.loadingLayout.visibility = View.GONE
-//                view?.showSnackBar("Ошибка!" , "Перезагрузить", {initViewModel()} )
+                binding.loadingLayout.visibility = View.GONE
+                view?.showSnackBar(
+                    "Ошибка! ${appState.error.message}",
+                    "Перезагрузить",
+                    { initViewModel() })
             }
         }
     }
 
-    interface OnItemViewClickListener {
-        fun onItemViewClick(movie: MovieEntity)
+    private fun getMovieType(character: String, typeOfMovies: String): String {
+        if (character == MOVIE) {
+            return when (typeOfMovies) {
+                UPCOMING -> {
+                    resources.getString(R.string.movies) + resources.getString(R.string.upcoming)
+                }
+                NOW_PLAYING -> {
+                    resources.getString(R.string.movies) + resources.getString(R.string.now_playing)
+                }
+                POPULAR -> {
+                    resources.getString(R.string.movies) + resources.getString(R.string.popular)
+                }
+                TOP_RATED -> {
+                    resources.getString(R.string.movies) + resources.getString(R.string.top_rated)
+                }
+                else -> "Unknown type"
+            }
+        }else{
+            return when (typeOfMovies) {
+                AIRING_TODAY_TV -> {
+                    resources.getString(R.string.tv) + resources.getString(R.string.tv_airing_today)
+                }
+                NOW_PLAYING -> {
+                    resources.getString(R.string.tv) + resources.getString(R.string.now_playing)
+                }
+                POPULAR -> {
+                    resources.getString(R.string.tv) + resources.getString(R.string.popular)
+                }
+                TOP_RATED -> {
+                    resources.getString(R.string.tv) + resources.getString(R.string.top_rated)
+                }
+                else -> "Unknown type"
+            }
+        }
+    }
+
+    private fun readSettings() {
+        val defSet = setOf(DEFAULT_CATEGORY)
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        val editor = sharedPref?.edit()
+
+        var settings = sharedPref?.getStringSet(SETTINGS_KEY, defSet)
+        if (settings?.isEmpty() == true || settings == null) {
+            val checkBoxesText = mutableSetOf<String>()
+            checkBoxesText.add(DEFAULT_CATEGORY)
+            editor?.putStringSet(SETTINGS_KEY, checkBoxesText)
+            editor?.apply()
+            settings = sharedPref?.getStringSet(SETTINGS_KEY, defSet)
+        }
+        settings?.forEach {
+            val separated = it.split("/").toTypedArray()
+            homeViewModel.loadMoviesListFromServer(separated[0], separated[1])
+        }
     }
 
     override fun onDestroyView() {
         Log.d(TAG, "onDestroyView() called")
         super.onDestroyView()
-//        adapterPlayNow.removeListener()
-//        adapterUpcoming.removeListener()
         _binding = null
     }
 }

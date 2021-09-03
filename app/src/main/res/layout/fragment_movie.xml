@@ -110,6 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/main_margin"
+                android:scrollbars="vertical"
                 android:text="Здесь будет описание какого-то умопомрачительного фильма. Это будет очень круто!" />
 
         </FrameLayout>
@@ -126,7 +127,7 @@
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/loadingBackground"
+        android:background="@color/loading_background"
         android:visibility="gone"
         tools:visibility="visible">
 

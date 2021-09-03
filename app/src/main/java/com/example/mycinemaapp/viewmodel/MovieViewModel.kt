@@ -3,26 +3,25 @@ package com.example.mycinemaapp.viewmodel
 import Json4KotlinBaseMovieDetailEntity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mycinemaapp.model.DataBaseDetailMovieRepository
 import com.example.mycinemaapp.model.MyApplication
-import com.example.mycinemaapp.model.WebDataBaseMovieDetailRepoImpl
+import com.example.mycinemaapp.model.repos.DataBaseDetailMovieRepositoryInterface
+import com.example.mycinemaapp.model.repos.WebDataBaseMovieDetailRepoImpl
 
 class MovieViewModel(
-    private val liveDataToObserve: MutableLiveData<MovieFragmentAppState> = MutableLiveData()
+    val movieDetailLiveDataToObserve: MutableLiveData<MovieFragmentAppState> = MutableLiveData()
 ) : ViewModel() {
 
-    fun getLiveData() = liveDataToObserve
-    private lateinit var dataBaseDetailMovieRepository: DataBaseDetailMovieRepository
+    private lateinit var dataBaseDetailMovieRepositoryInterface: DataBaseDetailMovieRepositoryInterface
 
     fun getMovieEntityFromServer(movieId: Int) {
-        liveDataToObserve.value = MovieFragmentAppState.Loading
-        dataBaseDetailMovieRepository = WebDataBaseMovieDetailRepoImpl(MyApplication().retrofit)
+        movieDetailLiveDataToObserve.value = MovieFragmentAppState.Loading
+        dataBaseDetailMovieRepositoryInterface = WebDataBaseMovieDetailRepoImpl(MyApplication().retrofit)
         var json4KotlinBaseMovieDetailEntity: Json4KotlinBaseMovieDetailEntity
-        with(dataBaseDetailMovieRepository) {
+        with(dataBaseDetailMovieRepositoryInterface) {
             getDataBaseDetailMovieRepos(movieId, {
-                liveDataToObserve.value = MovieFragmentAppState.Success(it)
+                movieDetailLiveDataToObserve.value = MovieFragmentAppState.Success(it)
             }, {
-                liveDataToObserve.value = MovieFragmentAppState.Error(it)
+                movieDetailLiveDataToObserve.value = MovieFragmentAppState.Error(it)
             })
         }
     }
