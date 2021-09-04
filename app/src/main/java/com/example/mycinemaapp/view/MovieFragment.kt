@@ -37,7 +37,7 @@ class MovieFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            initViewModel()
+        initViewModel()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -46,8 +46,8 @@ class MovieFragment : Fragment() {
         val character = arguments?.getString(BUNDLE_CHARACTER)
         val id = arguments?.getInt(BUNDLE_ID)
         if (character != null && id != null) {
-            Log.d(TAG, "initViewModel() called character = $character id = $id" )
-        movieViewModel.getMovieEntityFromServer(character, id)
+            Log.d(TAG, "initViewModel() called character = $character id = $id")
+            movieViewModel.getMovieEntityFromServer(character, id)
         }
     }
 
@@ -64,19 +64,38 @@ class MovieFragment : Fragment() {
                     loadingLayout.visibility = View.GONE
                     posterImageView.load("$BASE_POSTERS_PATH${movie.posterPath}")
                     movieOverviewTextView.movementMethod = ScrollingMovementMethod()
-                    movie.title.let { movieTitleTextView.text = movie.title }
-                    movie.name.let { movieTitleTextView.text = movie.name }
-                    movie.originalTitle.let { movieTitleOnEnglishTextView.text = movie.originalTitle }
-                    movie.originalName.let { movieTitleOnEnglishTextView.text = movie.originalName }
-                    movie.tagline.let { movieTaglineTextView.text = getString((R.string.tagline), movie.tagline) }
+                    if (movie.title != "") {
+                        movieTitleTextView.text = movie.title
+                    }
+                    if (movie.name != "") {
+                        movieTitleTextView.text = movie.name
+                    }
+                    if (movie.originalTitle != "") {
+                        movieTitleOnEnglishTextView.text = movie.originalTitle
+                    }
+                    if (movie.originalName != "") {
+                        movieTitleOnEnglishTextView.text = movie.originalName
+                    }
+                    if (movie.tagline != "" && movie.tagline!=null) {
+                        movieTaglineTextView.text = getString((R.string.tagline), movie.tagline)
+                    }
                     val subGenresString =
                         buildString { movie.genres.forEach { append("\n" + it.name) } }
-                    movieGenreTextView.text =
-                        resources.getString((R.string.genres), subGenresString)
-                    movieRatingTextView.text =
-                        resources.getString((R.string.vote_average), movie.voteAverage.toString())
-                    movie.releaseDate.let { movieReleaseDateTextView.text =
-                        resources.getString((R.string.release_date), movie.releaseDate) }
+                    if (subGenresString != "") {
+                        movieGenreTextView.text =
+                            resources.getString((R.string.genres), subGenresString)
+                    }
+                    if (movie.voteAverage != 0.0 && movie.voteAverage!=null) {
+                        movieRatingTextView.text =
+                            resources.getString(
+                                (R.string.vote_average),
+                                movie.voteAverage.toString()
+                            )
+                    }
+                    if (movie.releaseDate != "" && movie.releaseDate !=null) {
+                        movieReleaseDateTextView.text =
+                            resources.getString((R.string.release_date), movie.releaseDate)
+                    }
                     movieOverviewTextView.text = movie.overview
                 }
             }

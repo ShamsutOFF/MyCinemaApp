@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -49,6 +50,10 @@ android {
 }
 
 dependencies {
+    //Room
+    implementation 'androidx.room:room-runtime:2.3.0'
+    kapt 'androidx.room:room-compiler:2.3.0'
+
     //Groupie
     implementation 'com.xwray:groupie:2.8.0'
     implementation 'com.xwray:groupie-kotlin-android-extensions:2.8.0'

@@ -1,5 +1,6 @@
 package com.example.mycinemaapp.model.items
 
+import android.widget.Toast
 import com.example.mycinemaapp.R
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -19,5 +20,8 @@ class MainCardContainer(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.title_text_view.text = title
         viewHolder.items_container.adapter = GroupAdapter<GroupieViewHolder>().apply { addAll(items) }
+        viewHolder.itemView.setOnClickListener {
+            Toast.makeText(viewHolder.itemView.context,"0",Toast.LENGTH_SHORT).show()
+        }
     }
 }

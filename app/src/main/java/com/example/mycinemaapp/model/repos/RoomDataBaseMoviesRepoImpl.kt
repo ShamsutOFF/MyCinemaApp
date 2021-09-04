@@ -2,7 +2,7 @@ package com.example.mycinemaapp.model.repos
 
 import com.example.mycinemaapp.model.entitys.MovieEntity
 
-class MemoryCacheDataBaseMoviesRepoImpl : DataBaseMoviesRepositoryInterface {
+class RoomDataBaseMoviesRepoImpl : DataBaseMoviesRepositoryInterface {
     override fun getDataBaseMoviesRepos(
         character: String,
         typeOfRequestedMovies: String,
