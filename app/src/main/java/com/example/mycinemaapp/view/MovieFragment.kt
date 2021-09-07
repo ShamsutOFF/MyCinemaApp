@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -50,7 +51,7 @@ class MovieFragment : Fragment() {
         val id = getMovieId()
         if (character != null && id != null) {
             Log.d(TAG, "initViewModel() called character = $character id = $id")
-            movieViewModel.getMovieEntityFromServer(character, id)
+            movieViewModel.getMovieEntityFromServer(app.retrofit, character, id)
         }
     }
 
@@ -66,9 +67,11 @@ class MovieFragment : Fragment() {
         when (movieFragmentAppState) {
             is MovieFragmentAppState.Success -> {
                 val movie = movieFragmentAppState.movieDetailData
+                val movieDto = MovieEntityRoomDto(0,getCharacter()!!,getMovieId()!!)
+                Toast.makeText(context,movieViewModel.checkFromFavoriteRoom(app.roomDb, movieDto).toString(),Toast.LENGTH_SHORT).show()
+//                movieViewModel.checkFromFavoriteRoom(app.roomDb, movieDto)
 
                 binding.favoriteButton.setOnClickListener {
-                    val movieDto = MovieEntityRoomDto(0,getCharacter()!!,getMovieId()!!)
                     Log.d(TAG, "movieDto = $movieDto")
                         movieViewModel.addToFavoriteRoom(app.roomDb, movieDto)
                 }

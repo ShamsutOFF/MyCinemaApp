@@ -4,12 +4,12 @@ import MovieDetailEntity
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mycinemaapp.model.MyApplication
 import com.example.mycinemaapp.model.repos.DataBaseDetailMovieRepositoryInterface
 import com.example.mycinemaapp.model.repos.WebDataBaseMovieDetailRepoImpl
 import com.example.mycinemaapp.model.room.MovieDataBaseRoom
 import com.example.mycinemaapp.model.room.MovieEntityRoomDto
 import com.example.mycinemaapp.model.room.RoomDataBaseMoviesRepoImpl
+import retrofit2.Retrofit
 
 private const val TAG: String = "@@@ MovieViewModel"
 
@@ -19,11 +19,11 @@ class MovieViewModel(
 
     private lateinit var dataBaseDetailMovieRepositoryInterface: DataBaseDetailMovieRepositoryInterface
 
-    fun getMovieEntityFromServer(character: String, movieId: Int) {
+    fun getMovieEntityFromServer(retrofit: Retrofit, character: String, movieId: Int) {
         movieDetailLiveDataToObserve.value = MovieFragmentAppState.Loading
 
         dataBaseDetailMovieRepositoryInterface =
-            WebDataBaseMovieDetailRepoImpl(MyApplication().retrofit)
+            WebDataBaseMovieDetailRepoImpl(retrofit)
         with(dataBaseDetailMovieRepositoryInterface) {
             getDataBaseDetailMovieRepos(character, movieId, {
                 movieDetailLiveDataToObserve.value = MovieFragmentAppState.Success(character, it)
@@ -37,12 +37,21 @@ class MovieViewModel(
     fun addToFavoriteRoom(room: MovieDataBaseRoom, movieDto: MovieEntityRoomDto) {
         var dataBaseMovieRoom = RoomDataBaseMoviesRepoImpl(room)
         Log.d(TAG, "addToFavoriteRoom() called with: movie = $movieDto")
-//        dataBaseMovieRoom.addToFavorite(movie)
+        dataBaseMovieRoom.addToFavorite(movieDto)
     }
-//    fun addToFavoriteRoom(character: String, movieId: Int, title: String, name: String) {
-//        val movie = MovieEntityRoomDto(0, character, movieId, title, name)
-//        dataBaseMovieRoom.addToFavorite(movie)
-//    }
+
+    fun deleteFromFavoriteRoom(room: MovieDataBaseRoom, movieDto: MovieEntityRoomDto) {
+        var dataBaseMovieRoom = RoomDataBaseMoviesRepoImpl(room)
+        Log.d(TAG, "addToFavoriteRoom() called with: movie = $movieDto")
+        dataBaseMovieRoom.addToFavorite(movieDto)
+    }
+
+    fun checkFromFavoriteRoom(room: MovieDataBaseRoom, movieDto: MovieEntityRoomDto): Boolean {
+        var dataBaseMovieRoom = RoomDataBaseMoviesRepoImpl(room)
+        val a = dataBaseMovieRoom.getFavorite(movieDto)
+        Log.d(TAG, "checkFromFavoriteRoom() a = $a")
+        return dataBaseMovieRoom.getFavorite(movieDto)==null
+    }
 }
 
 sealed class MovieFragmentAppState {

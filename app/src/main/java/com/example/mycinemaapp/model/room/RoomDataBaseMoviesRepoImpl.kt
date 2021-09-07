@@ -26,6 +26,12 @@ class RoomDataBaseMoviesRepoImpl(
         }.start()
     }
 
+    fun getFavorite(movieEntityRoomDto: MovieEntityRoomDto) {
+        Thread {
+             db.MovieRepoDao().getMovieByCharacterAndId(movieEntityRoomDto.character, movieEntityRoomDto.id)
+        }.start()
+    }
+
     override fun getDataBaseMoviesRepos(
         character: String,
         typeOfRequestedMovies: String,

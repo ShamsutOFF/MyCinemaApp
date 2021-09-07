@@ -8,7 +8,10 @@ interface MovieRepoDao {
     fun getAll(): List<MovieEntityRoomDto>
 
     @Query("SELECT * FROM MovieEntityRoomDto WHERE id LIKE :id")
-    fun getMovieById(id: String): List<MovieEntityRoomDto>
+    fun getMovieById(id: Int): List<MovieEntityRoomDto>
+
+    @Query("SELECT * FROM MovieEntityRoomDto WHERE character == :character AND id == :id")
+    fun getMovieByCharacterAndId(character:String, id: Int): List<MovieEntityRoomDto>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(movieEntityRoomDto: MovieEntityRoomDto)
