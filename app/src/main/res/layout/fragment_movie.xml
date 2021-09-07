@@ -111,14 +111,15 @@
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/main_margin"
                 android:scrollbars="vertical"
-                android:text="Здесь будет описание какого-то умопомрачительного фильма. Это будет очень круто!" />
+                tools:text="Здесь будет описание какого-то умопомрачительного фильма. Это будет очень круто!" />
 
         </FrameLayout>
 
         <Button
+            android:id="@+id/favorite_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Добавить в избранное"
+            android:text="@string/add_to_favorite"
             android:layout_margin="@dimen/main_margin"/>
 
     </LinearLayout>

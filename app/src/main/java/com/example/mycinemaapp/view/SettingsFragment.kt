@@ -83,9 +83,8 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
-        val settingsString =
-            buildString { settings?.forEach { append(it) } }
-        binding.saveTextView.text = settingsString
+//        val settingsString =
+//            buildString { settings?.forEach { append(it) } }
     }
 
     private fun saveSettings() {
@@ -102,7 +101,6 @@ class SettingsFragment : Fragment() {
             if (checkBoxPopularTv.isChecked) checkBoxesText.add(POPULAR_TV)
             if (checkBoxTopRatedTv.isChecked) checkBoxesText.add(TOP_RATED_TV)
         }
-        binding.saveTextView.text = checkBoxesText.toString()
         editor?.putStringSet(SETTINGS_KEY, checkBoxesText)
         editor?.apply()
     }

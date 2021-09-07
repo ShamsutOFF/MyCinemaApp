@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.FragmentHomeBinding
+import com.example.mycinemaapp.model.MyApplication
 import com.example.mycinemaapp.model.items.MainCardContainer
 import com.example.mycinemaapp.model.items.MovieItem
 import com.example.mycinemaapp.utils.showSnackBar
@@ -21,6 +22,7 @@ import com.example.mycinemaapp.viewmodel.AppState
 import com.example.mycinemaapp.viewmodel.HomeViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+
 
 private const val TAG: String = "@@@ HomeFragment"
 private const val SETTINGS_KEY = "SETTINGS_KEY"
@@ -39,6 +41,8 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val binding get() = _binding!!
+
+    private val app by lazy { context?.applicationContext as MyApplication }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,7 +83,7 @@ class HomeFragment : Fragment() {
     private fun loadMovies(settings: MutableSet<String>?) {
         settings?.forEach {
             val separated = it.split("/").toTypedArray()
-            homeViewModel.loadMoviesListFromServer(separated[0], separated[1])
+            homeViewModel.loadMoviesListFromServer( app.retrofit, separated[0], separated[1])
         }
     }
 

@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.FragmentMovieBinding
+import com.example.mycinemaapp.model.MyApplication
+import com.example.mycinemaapp.model.room.MovieEntityRoomDto
 import com.example.mycinemaapp.viewmodel.MovieFragmentAppState
 import com.example.mycinemaapp.viewmodel.MovieViewModel
 
@@ -23,8 +25,9 @@ private const val BASE_POSTERS_PATH = "https://image.tmdb.org/t/p/w500/"
 class MovieFragment : Fragment() {
     private var _binding: FragmentMovieBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var movieViewModel: MovieViewModel
+
+    private val app by lazy { context?.applicationContext as MyApplication }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -43,12 +46,19 @@ class MovieFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun initViewModel() {
         movieViewModel.movieDetailLiveDataToObserve.observe(viewLifecycleOwner) { renderData(it) }
-        val character = arguments?.getString(BUNDLE_CHARACTER)
-        val id = arguments?.getInt(BUNDLE_ID)
+        val character = getCharacter()
+        val id = getMovieId()
         if (character != null && id != null) {
             Log.d(TAG, "initViewModel() called character = $character id = $id")
             movieViewModel.getMovieEntityFromServer(character, id)
         }
+    }
+
+    private fun getCharacter(): String? {
+        return arguments?.getString(BUNDLE_CHARACTER)
+    }
+    private fun getMovieId(): Int? {
+        return arguments?.getInt(BUNDLE_ID)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -56,24 +66,26 @@ class MovieFragment : Fragment() {
         when (movieFragmentAppState) {
             is MovieFragmentAppState.Success -> {
                 val movie = movieFragmentAppState.movieDetailData
-                Log.d(
-                    TAG,
-                    "renderData() called with: movieFragmentAppState = $movieFragmentAppState"
-                )
+
+                binding.favoriteButton.setOnClickListener {
+                    val movieDto = MovieEntityRoomDto(0,getCharacter()!!,getMovieId()!!)
+                    Log.d(TAG, "movieDto = $movieDto")
+                        movieViewModel.addToFavoriteRoom(app.roomDb, movieDto)
+                }
                 with(binding) {
                     loadingLayout.visibility = View.GONE
                     posterImageView.load("$BASE_POSTERS_PATH${movie.posterPath}")
                     movieOverviewTextView.movementMethod = ScrollingMovementMethod()
-                    if (movie.title != "") {
+                    if (movie.title != "" && movie.title!=null) {
                         movieTitleTextView.text = movie.title
                     }
-                    if (movie.name != "") {
+                    if (movie.name != "" && movie.name!=null) {
                         movieTitleTextView.text = movie.name
                     }
-                    if (movie.originalTitle != "") {
+                    if (movie.originalTitle != "" && movie.originalTitle!=null) {
                         movieTitleOnEnglishTextView.text = movie.originalTitle
                     }
-                    if (movie.originalName != "") {
+                    if (movie.originalName != "" && movie.originalName!=null) {
                         movieTitleOnEnglishTextView.text = movie.originalName
                     }
                     if (movie.tagline != "" && movie.tagline!=null) {
