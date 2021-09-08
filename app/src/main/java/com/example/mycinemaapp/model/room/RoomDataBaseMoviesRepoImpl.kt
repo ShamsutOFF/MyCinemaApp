@@ -1,7 +1,12 @@
 package com.example.mycinemaapp.model.room
 
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import com.example.mycinemaapp.model.entitys.MovieEntity
 import com.example.mycinemaapp.model.repos.DataBaseMoviesRepositoryInterface
+
+private const val TAG: String = "@@@ RoomMoviesRepoImpl"
 
 class RoomDataBaseMoviesRepoImpl(
     private val db: MovieDataBaseRoom
@@ -16,7 +21,7 @@ class RoomDataBaseMoviesRepoImpl(
 
     fun deleteFromFavorite(movieEntityRoomDto: MovieEntityRoomDto) {
         Thread {
-            db.MovieRepoDao().delete(movieEntityRoomDto)
+            db.MovieRepoDao().delete(movieEntityRoomDto.character, movieEntityRoomDto.id)
         }.start()
     }
 
@@ -26,10 +31,17 @@ class RoomDataBaseMoviesRepoImpl(
         }.start()
     }
 
-    fun getFavorite(movieEntityRoomDto: MovieEntityRoomDto) {
+    fun getFavorite(
+        movieEntityRoomDto: MovieEntityRoomDto,
+        onSuccess: (List<MovieEntityRoomDto>) -> Unit
+    ) {
         Thread {
-             db.MovieRepoDao().getMovieByCharacterAndId(movieEntityRoomDto.character, movieEntityRoomDto.id)
+            val a = db.MovieRepoDao()
+                .getMovieByCharacterAndId(movieEntityRoomDto.character, movieEntityRoomDto.id)
+            Handler(Looper.getMainLooper()).post { onSuccess(a) }
+            Log.d(TAG, "getFavorite() called a = $a")
         }.start()
+        Log.d(TAG, "getFavorite() called onSuccess = $onSuccess")
     }
 
     override fun getDataBaseMoviesRepos(

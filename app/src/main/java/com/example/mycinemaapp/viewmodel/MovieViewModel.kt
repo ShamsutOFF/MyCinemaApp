@@ -14,7 +14,8 @@ import retrofit2.Retrofit
 private const val TAG: String = "@@@ MovieViewModel"
 
 class MovieViewModel(
-    val movieDetailLiveDataToObserve: MutableLiveData<MovieFragmentAppState> = MutableLiveData()
+    val movieDetailLiveDataToObserve: MutableLiveData<MovieFragmentAppState> = MutableLiveData(),
+    val checkMovieLiveData: MutableLiveData<CheckFavoriteAppState> = MutableLiveData()
 ) : ViewModel() {
 
     private lateinit var dataBaseDetailMovieRepositoryInterface: DataBaseDetailMovieRepositoryInterface
@@ -22,8 +23,7 @@ class MovieViewModel(
     fun getMovieEntityFromServer(retrofit: Retrofit, character: String, movieId: Int) {
         movieDetailLiveDataToObserve.value = MovieFragmentAppState.Loading
 
-        dataBaseDetailMovieRepositoryInterface =
-            WebDataBaseMovieDetailRepoImpl(retrofit)
+        dataBaseDetailMovieRepositoryInterface = WebDataBaseMovieDetailRepoImpl(retrofit)
         with(dataBaseDetailMovieRepositoryInterface) {
             getDataBaseDetailMovieRepos(character, movieId, {
                 movieDetailLiveDataToObserve.value = MovieFragmentAppState.Success(character, it)
@@ -42,16 +42,30 @@ class MovieViewModel(
 
     fun deleteFromFavoriteRoom(room: MovieDataBaseRoom, movieDto: MovieEntityRoomDto) {
         var dataBaseMovieRoom = RoomDataBaseMoviesRepoImpl(room)
-        Log.d(TAG, "addToFavoriteRoom() called with: movie = $movieDto")
-        dataBaseMovieRoom.addToFavorite(movieDto)
+        Log.d(TAG, "deleteFromFavoriteRoom() called with: movie = $movieDto")
+        dataBaseMovieRoom.deleteFromFavorite(movieDto)
     }
 
-    fun checkFromFavoriteRoom(room: MovieDataBaseRoom, movieDto: MovieEntityRoomDto): Boolean {
+    fun checkFromFavoriteRoom(room: MovieDataBaseRoom, movieDto: MovieEntityRoomDto) {
+        checkMovieLiveData.value = CheckFavoriteAppState.Loading
+
         var dataBaseMovieRoom = RoomDataBaseMoviesRepoImpl(room)
-        val a = dataBaseMovieRoom.getFavorite(movieDto)
-        Log.d(TAG, "checkFromFavoriteRoom() a = $a")
-        return dataBaseMovieRoom.getFavorite(movieDto)==null
+        dataBaseMovieRoom.getFavorite(movieDto) {
+            if (it.isEmpty()) {
+                checkMovieLiveData.value = CheckFavoriteAppState.Success(false)
+            } else {
+                checkMovieLiveData.value = CheckFavoriteAppState.Success(true)
+            }
+        }
     }
+}
+
+sealed class CheckFavoriteAppState {
+    data class Success(val result: Boolean) :
+        CheckFavoriteAppState()
+
+    data class Error(val error: Throwable) : CheckFavoriteAppState()
+    object Loading : CheckFavoriteAppState()
 }
 
 sealed class MovieFragmentAppState {

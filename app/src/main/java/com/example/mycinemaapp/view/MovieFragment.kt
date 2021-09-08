@@ -3,11 +3,9 @@ package com.example.mycinemaapp.view
 import android.os.Build
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +14,7 @@ import com.example.mycinemaapp.R
 import com.example.mycinemaapp.databinding.FragmentMovieBinding
 import com.example.mycinemaapp.model.MyApplication
 import com.example.mycinemaapp.model.room.MovieEntityRoomDto
+import com.example.mycinemaapp.viewmodel.CheckFavoriteAppState
 import com.example.mycinemaapp.viewmodel.MovieFragmentAppState
 import com.example.mycinemaapp.viewmodel.MovieViewModel
 
@@ -27,6 +26,8 @@ class MovieFragment : Fragment() {
     private var _binding: FragmentMovieBinding? = null
     private val binding get() = _binding!!
     private lateinit var movieViewModel: MovieViewModel
+
+    private lateinit var movieDto: MovieEntityRoomDto
 
     private val app by lazy { context?.applicationContext as MyApplication }
 
@@ -47,17 +48,45 @@ class MovieFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun initViewModel() {
         movieViewModel.movieDetailLiveDataToObserve.observe(viewLifecycleOwner) { renderData(it) }
-        val character = getCharacter()
-        val id = getMovieId()
-        if (character != null && id != null) {
-            Log.d(TAG, "initViewModel() called character = $character id = $id")
-            movieViewModel.getMovieEntityFromServer(app.retrofit, character, id)
+        movieViewModel.checkMovieLiveData.observe(viewLifecycleOwner) { renderButton(it) }
+        val movieId = getMovieId()
+        val movieCharacter = getCharacter()
+
+        if (movieCharacter != null && movieId != null) {
+            movieDto = MovieEntityRoomDto(0, movieCharacter, movieId)
+            movieViewModel.getMovieEntityFromServer(app.retrofit, movieCharacter, movieId)
+            movieViewModel.checkFromFavoriteRoom(app.roomDb, movieDto)
+        }
+    }
+
+    private fun renderButton(favoriteAppState: CheckFavoriteAppState?) {
+        when (favoriteAppState) {
+            is CheckFavoriteAppState.Success -> {
+                binding.favoriteButton.isClickable = true
+                if (!favoriteAppState.result) {
+                    binding.favoriteButton.setText(R.string.add_to_favorite)
+                    binding.favoriteButton.setOnClickListener {
+                        movieViewModel.addToFavoriteRoom(app.roomDb, movieDto)
+                        movieViewModel.checkFromFavoriteRoom(app.roomDb, movieDto)
+                    }
+                } else {
+                    binding.favoriteButton.setText(R.string.delete_from_favorite)
+                    binding.favoriteButton.setOnClickListener {
+                        movieViewModel.deleteFromFavoriteRoom(app.roomDb, movieDto)
+                        movieViewModel.checkFromFavoriteRoom(app.roomDb, movieDto)
+                    }
+                }
+            }
+            is CheckFavoriteAppState.Loading -> {
+                binding.favoriteButton.isClickable = false
+            }
         }
     }
 
     private fun getCharacter(): String? {
         return arguments?.getString(BUNDLE_CHARACTER)
     }
+
     private fun getMovieId(): Int? {
         return arguments?.getInt(BUNDLE_ID)
     }
@@ -67,32 +96,25 @@ class MovieFragment : Fragment() {
         when (movieFragmentAppState) {
             is MovieFragmentAppState.Success -> {
                 val movie = movieFragmentAppState.movieDetailData
-                val movieDto = MovieEntityRoomDto(0,getCharacter()!!,getMovieId()!!)
-                Toast.makeText(context,movieViewModel.checkFromFavoriteRoom(app.roomDb, movieDto).toString(),Toast.LENGTH_SHORT).show()
-//                movieViewModel.checkFromFavoriteRoom(app.roomDb, movieDto)
-
-                binding.favoriteButton.setOnClickListener {
-                    Log.d(TAG, "movieDto = $movieDto")
-                        movieViewModel.addToFavoriteRoom(app.roomDb, movieDto)
-                }
                 with(binding) {
                     loadingLayout.visibility = View.GONE
                     posterImageView.load("$BASE_POSTERS_PATH${movie.posterPath}")
                     movieOverviewTextView.movementMethod = ScrollingMovementMethod()
-                    if (movie.title != "" && movie.title!=null) {
+                    if (movie.title != "" && movie.title != null) {
                         movieTitleTextView.text = movie.title
                     }
-                    if (movie.name != "" && movie.name!=null) {
+                    if (movie.name != "" && movie.name != null) {
                         movieTitleTextView.text = movie.name
                     }
-                    if (movie.originalTitle != "" && movie.originalTitle!=null) {
+                    if (movie.originalTitle != "" && movie.originalTitle != null) {
                         movieTitleOnEnglishTextView.text = movie.originalTitle
                     }
-                    if (movie.originalName != "" && movie.originalName!=null) {
+                    if (movie.originalName != "" && movie.originalName != null) {
                         movieTitleOnEnglishTextView.text = movie.originalName
                     }
-                    if (movie.tagline != "" && movie.tagline!=null) {
-                        movieTaglineTextView.text = getString((R.string.tagline), movie.tagline)
+                    if (movie.tagline != "" && movie.tagline != null) {
+                        movieTaglineTextView.text =
+                            resources.getString((R.string.tagline), movie.tagline)
                     }
                     val subGenresString =
                         buildString { movie.genres.forEach { append("\n" + it.name) } }
@@ -100,14 +122,14 @@ class MovieFragment : Fragment() {
                         movieGenreTextView.text =
                             resources.getString((R.string.genres), subGenresString)
                     }
-                    if (movie.voteAverage != 0.0 && movie.voteAverage!=null) {
+                    if (movie.voteAverage != 0.0 && movie.voteAverage != null) {
                         movieRatingTextView.text =
                             resources.getString(
                                 (R.string.vote_average),
                                 movie.voteAverage.toString()
                             )
                     }
-                    if (movie.releaseDate != "" && movie.releaseDate !=null) {
+                    if (movie.releaseDate != "" && movie.releaseDate != null) {
                         movieReleaseDateTextView.text =
                             resources.getString((R.string.release_date), movie.releaseDate)
                     }
