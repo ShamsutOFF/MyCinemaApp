@@ -30,7 +30,6 @@ class WebDataBaseMovieDetailRepoImpl(private val retrofit: Retrofit) :
                     onSuccess(response.body()!!)
                 } else {
                     onError(Throwable("App error ${response.code()}"))
-
                 }
             }
 

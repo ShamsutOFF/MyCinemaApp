@@ -3,6 +3,7 @@ package com.example.mycinemaapp.view
 import android.os.Build
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,10 @@ class MovieFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(
+            TAG,
+            "onViewCreated() called with: view = $view, savedInstanceState = $savedInstanceState"
+        )
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
     }

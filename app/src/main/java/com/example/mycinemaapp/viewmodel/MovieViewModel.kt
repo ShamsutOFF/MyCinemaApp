@@ -63,7 +63,6 @@ class MovieViewModel(
 sealed class CheckFavoriteAppState {
     data class Success(val result: Boolean) :
         CheckFavoriteAppState()
-
     data class Error(val error: Throwable) : CheckFavoriteAppState()
     object Loading : CheckFavoriteAppState()
 }
@@ -71,7 +70,6 @@ sealed class CheckFavoriteAppState {
 sealed class MovieFragmentAppState {
     data class Success(val character: String, val movieDetailData: MovieDetailEntity) :
         MovieFragmentAppState()
-
     data class Error(val error: Throwable) : MovieFragmentAppState()
     object Loading : MovieFragmentAppState()
 }

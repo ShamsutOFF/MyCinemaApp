@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
     private fun onItemClick(character:String, id:Int) {
         activity?.supportFragmentManager?.apply {
             beginTransaction()
+//                .add(R.id.nav_host_fragment_activity_main, MovieFragment.newInstance(Bundle().apply {
                 .add(R.id.container, MovieFragment.newInstance(Bundle().apply {
                     putString(BUNDLE_CHARACTER, character)
                     putInt(BUNDLE_ID, id)

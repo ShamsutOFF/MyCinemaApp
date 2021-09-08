@@ -2,7 +2,6 @@ package com.example.mycinemaapp.model.room
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.example.mycinemaapp.model.entitys.MovieEntity
 import com.example.mycinemaapp.model.repos.DataBaseMoviesRepositoryInterface
 
@@ -25,9 +24,12 @@ class RoomDataBaseMoviesRepoImpl(
         }.start()
     }
 
-    fun getAllFavorites() {
+    fun getAllFavorites(
+        onSuccess: (List<MovieEntityRoomDto>) -> Unit
+    ) {
         Thread {
-            db.MovieRepoDao().getAll()
+            val a = db.MovieRepoDao().getAll()
+            Handler(Looper.getMainLooper()).post { onSuccess(a) }
         }.start()
     }
 
@@ -39,9 +41,7 @@ class RoomDataBaseMoviesRepoImpl(
             val a = db.MovieRepoDao()
                 .getMovieByCharacterAndId(movieEntityRoomDto.character, movieEntityRoomDto.id)
             Handler(Looper.getMainLooper()).post { onSuccess(a) }
-            Log.d(TAG, "getFavorite() called a = $a")
         }.start()
-        Log.d(TAG, "getFavorite() called onSuccess = $onSuccess")
     }
 
     override fun getDataBaseMoviesRepos(
