@@ -62,7 +62,7 @@ class FavoritesFragment : Fragment() {
             is MovieLoadAppState.Success -> {
                 val favoriteMovieItem = FavoriteMovieItem(
                     loadAppState.movieDetailData,
-                    ::onItemClick,
+                    ::onItemClickFav,
                     loadAppState.character
                 )
                 Log.d(TAG, "renderData() called with: favoriteMovieItem = $favoriteMovieItem")
@@ -96,14 +96,14 @@ class FavoritesFragment : Fragment() {
         favoritesViewModel.getMovieEntityFromServer(app.retrofit, movie.character, movie.id)
     }
 
-    private fun onItemClick(character: String, id: Int) {
+    private fun onItemClickFav(character: String, id: Int) {
         Log.d(TAG, "onItemClick() called with: character = $character, id = $id")
         activity?.supportFragmentManager?.apply {
             beginTransaction()
-                .add(
-                    R.id.nav_host_fragment_activity_main,
-                    MovieFragment.newInstance(Bundle().apply {
-//                .add(R.id.container, MovieFragment.newInstance(Bundle().apply {
+//                .add(
+//                    R.id.nav_host_fragment_activity_main,
+//                    MovieFragment.newInstance(Bundle().apply {
+                .add(R.id.container, MovieFragment.newInstance(Bundle().apply {
                         putString(MovieFragment.BUNDLE_CHARACTER, character)
                         putInt(MovieFragment.BUNDLE_ID, id)
                     }))
